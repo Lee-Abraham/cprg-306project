@@ -9,35 +9,43 @@ import {auth} from '@/lib/firebase';
 
 //Log In Screen that directs towards sign up screen or HomeScreen
 export default function LogInScreen() {
+
     //Constant that will hold value
+
+    //Holds email and set value of email
     const [email, setEmail] = useState('');
+
+    //Holds Password and set value to password
     const [password, setPassword] =  useState('');
+
+    //Navigation
     const router = useRouter();
 
-    //Show cards
+    //Show either log in card or sign up card
     const [showSignUp, setShowSignUp] = useState(false)
 
-    //Log In
+    //Handles process of login
     const LoginHandler = async () => {
         try {
             await signInWithEmailAndPassword(auth, email, password)
-            router.push('/HomeScreen.js')
+            router.push('screens/HomeScreen')
         }
         catch  (error) {
             alert('Login failed: ' +  error.message)
         }
     }
 
+    //Handles when user wants to log in instead of sign up
     const LogButtHandler = async ()  => {
         setShowSignUp(false)
     }
 
-    //Sing Up handler
+    //Handles when user wants to sign-up instead of login
     const SignUpHandler = async () => {
         setShowSignUp(true)
     }
 
-    //
+    //Handles when user have sign-up
     const SignHandler = async ()  => {
         try{
             await createUserWithEmailAndPassword(auth, email, password)
@@ -49,7 +57,7 @@ export default function LogInScreen() {
         }
     }
 
-    //Guess
+    //Handles when user don't want to log in/ sign up
     const GuessHandler = () => {
         router.push('screens/HomeScreen')
     }
