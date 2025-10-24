@@ -27,8 +27,10 @@ export default function HomeScreen() {
 
             {/* Body */}
             <div className='grow flex flex-col lg:flex-row items-center justify-center space-y-5 lg:space-y-0 lg:space-x-5'>
-                <GameCard className='p-5' img={gameMemoryMatch} />
-                <GameCard img={ticTacToe} />
+                <div className='grid grid-cols-2 lg:grid-cols-4'>
+                    <GameCard img={gameMemoryMatch} />
+                    <GameCard img={ticTacToe} />
+                </div>
             </div>
 
             {/*Footer */}
