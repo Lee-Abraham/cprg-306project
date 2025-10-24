@@ -1,3 +1,4 @@
+'use client';
 import React from 'react'
 import GameCard from '../../components/GameCard'
 
@@ -7,6 +8,12 @@ export default function HomeScreen() {
         src: '/assets/memoryassets/memoryCardLogo.gif',
         name: 'Memory Match',
         desc: 'Pick the correct card that is matching'
+    }
+
+    const ticTacToe = {
+        src: null,
+        name: 'Tic-Tac-Toe',
+        desc: 'Align three of the same symbol'
     }
 
     return (
@@ -21,6 +28,7 @@ export default function HomeScreen() {
             {/* Body */}
             <div className='grow flex flex-col lg:flex-row items-center justify-center space-y-5 lg:space-y-0 lg:space-x-5'>
                 <GameCard className='p-5' img={gameMemoryMatch} />
+                <GameCard img={ticTacToe} />
             </div>
 
             {/*Footer */}

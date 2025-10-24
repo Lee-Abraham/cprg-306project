@@ -65,8 +65,8 @@ export default function LogInScreen() {
     return (
         <main className="flex flex-col bg-gray-600 text-black min-h-screen">
             {/*Header */}
-            <div className="justify-center items-center hidden lg:flex flex-col bg-blue-600 w-full text-white p-8 mb-10">
-                <h1>Hello</h1>
+            <div className="justify-center items-center hidden lg:flex flex-col w-full text-white">
+                <img className='w-150 h-90' src='/assets/ThatIsMyGameBanner.gif' alt='My game banner'></img>
             </div>
 
             {/*Middle Section */}
@@ -142,6 +142,9 @@ export default function LogInScreen() {
 
             {/*Footer */}
             <div className='bg-gray-400 text-white p-4 text-center w-full'>
+                <h1>
+                    @Author: Lee Valera, Aileen Pearl, Kevin Yabut
+                </h1>
             </div>  
         </main>
     );
