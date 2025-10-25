@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import {useRouter} from 'next/navigation'
 
 export default function MemoryGame() {
-  const timeOfGame = 180;
+  const timeOfGame = 60;
+  const router =  useRouter();
 
   // Initial card list
   const arrOfCard = [
@@ -17,6 +19,8 @@ export default function MemoryGame() {
     { id: 8, title: "Cactus Card", imgSrc: "/assets/memoryassets/cactus.gif", isPick: false },
     { id: 9, title: "Grape Card", imgSrc: "/assets/memoryassets/grape.gif", isPick: false },
     { id: 10, title: "Grape Card", imgSrc: "/assets/memoryassets/grape.gif", isPick: false },
+    { id: 11, title: "Nut Card", imgSrc: "/assets/memoryassets/nut.gif", isPick: false },
+    { id: 12, title: "Nut Card", imgSrc: "/assets/memoryassets/nut.gif", isPick: false },
   ];
 
   // Shuffle function
@@ -27,17 +31,70 @@ export default function MemoryGame() {
   // State
   const [cards, setCards] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(timeOfGame);
+  const [gameEnded, setGameEnded] = useState(false);
 
-  // Shuffle cards on mount
-  useEffect(() => {
-    setCards(randomCardOrder(arrOfCard));
-  }, []);
+  //Timer Count
+  useEffect(
+    //Check if time ends
+      () => {
+        if (timeLeft <= 0) {
+          endGame();
+          return;
+        }
+
+      //Count a second. and remove a second from time.
+      const timer = setInterval(
+        () => {
+          setTimeLeft(
+            (prev) => prev-1
+          );
+        }, 1000);
+
+      return () => clearInterval(timer);
+    },  [timeLeft]);
+
+    //Check if all cards have been pick.
+    useEffect (
+      () => {
+        if (cards.length ===0) return;
+
+        const allPicked = cards.every(card => card.isPick)
+
+        if (allPicked) {
+          endGame()
+        }
+      }, [cards]
+    )
+
+  //Handles game ends
+  const endGame  = () => {
+    if (gameEnded) return;
+    setGameEnded(true);
+    router.push(`/screens/ScorePage?score=${calculateScore()}`
+    );
+  }
 
   // Handle card press
   const cardPressedHandler = (index) => {
     if (selectedCards.length === 2 || selectedCards.includes(index)) return;
     setSelectedCards([...selectedCards, index]);
   };
+
+  //Handles Scoring
+  const calculateScore = () => {
+    return timeOfGame - timeLeft;
+  }
+
+  //--------------------------------------------------------------------//
+  //Use Effect
+  //--------------------------------------------------------------------//
+
+
+  // Shuffle cards on mount
+  useEffect(() => {
+    setCards(randomCardOrder(arrOfCard));
+  }, []);
 
   // Check for match
   useEffect(() => {
@@ -64,15 +121,16 @@ export default function MemoryGame() {
     <main className="flex flex-col bg-gray-600 text-black min-h-screen justify-center items-center">
       {/* Header */}
       <div className="text-center text-white mb-4">
-        <h1 className="text-2xl font-bold">Memory Match Game</h1>
+        <h1 className="text-2xl font-bold">Memory Game</h1>
       </div>
 
       {/* Game Board */}
-    <div className=' grow lg:w-[50%] w-full bg-purple-600 flex rounded-lg shadow-lg justify-center items-center'>
+    <div className=' grow flex-col lg:w-[50%] w-full bg-purple-600 flex rounded-lg shadow-lg justify-center items-center'>
 
-      {/**Left */}
-      <div>
-        
+      {/*Timer */}
+      <div className='flex flex-col justify-center  items-center'>
+        <img className='lg:w-50 w-30 pb-5' src="/assets/GameTimer.gif" alt="Game Timer" />
+        <h1 className='text-7xl pb-10'>{timeLeft}</h1>
       </div>
 
       {/*Middle */}
