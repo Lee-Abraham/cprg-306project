@@ -118,7 +118,7 @@ export default function MemoryGame() {
   }, [selectedCards]);
 
   return (
-    <main className="flex flex-col bg-gray-600 text-black min-h-screen justify-center items-center">
+    <main className="flex flex-col bg-gray-600 text-black h-screen justify-center items-center">
       {/* Header */}
       <div className="text-center text-white mb-4">
         <h1 className="text-2xl font-bold">Memory Game</h1>
