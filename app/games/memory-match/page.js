@@ -129,8 +129,8 @@ export default function MemoryGame() {
 
       {/*Timer */}
       <div className='flex flex-col justify-center  items-center'>
-        <img className='lg:w-50 w-30 pb-5' src="/assets/GameTimer.gif" alt="Game Timer" />
-        <h1 className='text-7xl pb-10'>{timeLeft}</h1>
+        <img className='lg:w-50 w-30 mb-5' src="/assets/GameTimer.gif" alt="Game Timer" />
+        <h1 className='text-7xl mb-10'>{timeLeft}</h1>
       </div>
 
       {/*Middle */}
