@@ -125,7 +125,7 @@ export default function MemoryGame() {
       </div>
 
       {/* Game Board */}
-    <div className=' grow flex-col lg:w-[50%] w-full bg-purple-600 flex rounded-lg shadow-lg justify-center items-center'>
+    <div className=' grow flex-col lg:w-[50%] w-full h-[80%] bg-purple-600 flex rounded-lg shadow-lg justify-center items-center'>
 
       {/*Timer */}
       <div className='flex flex-col justify-center  items-center'>
