@@ -72,14 +72,15 @@ export default function MemoryGame() {
 
   // Handle card press
   const cardPressedHandler = (index) => {
-    if (selectedCards.length === 2 || selectedCards.includes(index)) return;
+    if (startGame) {
+          if (selectedCards.length === 2 || selectedCards.includes(index)) return;
     setSelectedCards([...selectedCards, index]);
+    }
   };
 
   //Handles Scoring
   const calculateScore = () => {
-    alert(selectedCards.length)
-    return  10 - (timeOfGame - timeLeft);
+    return  100 - (timeOfGame - timeLeft);
   };
 
     //Handles game ends
@@ -136,7 +137,7 @@ export default function MemoryGame() {
       {/* Header */}
       <div className="relative flex flex-row items-center justify-between text-white mb-4 h-20 w-full px-4">
         <button className='z-10' onClick={backHome}>
-          <img className='w-30 m-5' src='/assets/BackButton.gif' alt='Back Button' />
+          <img className='w-30 m-5 cursor-pointer hover:w-31' src='/assets/BackButton.gif' alt='Back Button' />
         </button>
         <h1 className="absolute left-1/2 transform -translate-x-1/2 text-5xl font-bold">Memory Game</h1>
       </div>
@@ -177,8 +178,8 @@ export default function MemoryGame() {
               <button className='cursor-pointer' onClick={() => startMatch()}>
                 <img src='/assets/StartButton.gif' alt='Start button' />
               </button>) : (
-                <div className=''>
-                  <button onClick={endGame}>
+                <div>
+                  <button className='cursor-pointer' onClick={endGame}>
                     <img src='/assets/EndButton.gif' alt='End Button' />
                   </button>
                 </div>
