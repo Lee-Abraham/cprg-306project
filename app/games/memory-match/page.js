@@ -133,7 +133,7 @@ export default function MemoryGame() {
   }, [selectedCards]);
 
   return (
-    <main className="flex flex-col bg-gray-600 text-black min-h-full overflow-hidden justify-center items-center">
+    <main className="flex flex-col bg-gray-600 text-black min-h-full overflow-x-hidden justify-center items-center">
       {/* Header */}
       <div className="relative flex flex-row items-center justify-between text-white mb-4 h-18 w-full px-4">
         <button className='z-10' onClick={backHome}>
