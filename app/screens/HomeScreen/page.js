@@ -1,8 +1,10 @@
 'use client';
 import React from 'react'
 import GameCard from '../../components/GameCard'
+import {useRouter} from 'next/navigation'
 
 export default function HomeScreen() {
+      const router =  useRouter();
 
     const gameMemoryMatch = {
         src: '/assets/memoryassets/memoryCardLogo.gif',
@@ -16,13 +18,17 @@ export default function HomeScreen() {
         desc: 'Align three of the same symbol'
     }
 
+    const profilePage = () => {
+        router.push('/screens/ProfileScreen')
+    }
+
     return (
         <main className="flex flex-col bg-gray-600 text-black min-w-screen min-h-screen">
             {/* Header*/}
-            <div className='justify-center items-center hidden lg:flex flex-col bg-gray-400 w-full text-white p-8 mb-10"'>
-                <div>
-                    <img alt="profile Icon" />
-                </div>
+            <div className="shadow-lg bg-gray-400 hidden lg:flex flex-row items-center w-full text-white px-4 h-40 relative">
+                <img onClick={profilePage} className="cursor-pointer w-34 rounded-lg shadow-2xl" src='/assets/Profile.gif' alt="profile Icon" />
+                <h1 className="absolute left-1/2 transform -translate-x-1/2 text-5xl font-bold">My Game</h1>
+
             </div>
 
             {/* Body */}
@@ -34,7 +40,8 @@ export default function HomeScreen() {
             </div>
 
             {/*Footer */}
-            <div className='bg-gray-400 text-white p-4 text-center w-full'>
+            <div className='bg-gray-400 shadow-lg text-white p-4 text-center w-full'>
+                <h1>@Author: Lee Valera, Aileen Pearl, Kevin Yabut </h1>
             </div> 
         </main>
     );

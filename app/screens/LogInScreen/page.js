@@ -65,14 +65,14 @@ export default function LogInScreen() {
     return (
         <main className="flex flex-col bg-gray-600 text-black min-h-screen min-w-screen">
             {/*Header */}
-            <div className="justify-center items-center hidden lg:flex flex-col w-full text-white">
-                <img className='w-120 h-80 mb-10' src='/assets/ThatIsMyGameBanner.gif' alt='My game banner'></img>
+            <div className="justify-center items-center hidden lg:flex flex-col w-full">
+                <img className='pt-10' src='/assets/ThatIsMyGameBanner.gif' alt='My game banner'></img>
             </div>
 
             {/*Middle Section */}
 
             {/*Card 1*/}
-            <div className='grow flex flex-col lg:flex-row mb-10 items-center justify-center space-y-5 lg:space-y-0 lg:space-x-5'>
+            <div className='grow  flex flex-col lg:flex-row mb-10 items-center justify-center space-y-5 lg:space-y-0 lg:space-x-10'>
                 <div className="flex flex-col lg:flex-row shadow-lg rounded-lg w-full max-w-lg overflow-hidden">
                     {/* Log In*/}
                     {!showSignUp && (
@@ -86,7 +86,7 @@ export default function LogInScreen() {
                             />
                             <br/>
                             <input 
-                                className="text-3xl w-[90%] h-12 border bg-white border-gray-300 shadow-lg text-center rounded-md mb-5 mr-3 ml-3"
+                                className="text-3xl w-[90%] h-12 border bg-white border-gray-300 shadow-lg text-center rounded-md mr-3 ml-3 mb-3"
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
