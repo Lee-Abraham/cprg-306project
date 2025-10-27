@@ -80,7 +80,8 @@ export default function MemoryGame() {
 
   //Handles Scoring
   const calculateScore = () => {
-    return  100 - (timeOfGame - timeLeft);
+    const pickedCount = cards.filter(card => card.isPick).length;
+    return pickedCount *10 - (timeOfGame - timeLeft)
   };
 
     //Handles game ends
