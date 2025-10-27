@@ -33,6 +33,7 @@ export default function MemoryGame() {
   const [selectedCards, setSelectedCards] = useState([]);
   const [timeLeft, setTimeLeft] = useState(timeOfGame);
   const [gameEnded, setGameEnded] = useState(false);
+  const [startGame, setStartGame] = useState(false);
 
   //Timer Count
   useEffect(
@@ -46,13 +47,15 @@ export default function MemoryGame() {
       //Count a second. and remove a second from time.
       const timer = setInterval(
         () => {
-          setTimeLeft(
-            (prev) => prev-1
-          );
+          if (startGame) {
+            setTimeLeft (
+              (prev) => prev-1
+            ) ;
+          }
         }, 1000);
 
       return () => clearInterval(timer);
-    },  [timeLeft]);
+    },  [timeLeft] [startGame]);
 
     //Check if all cards have been pick.
     useEffect (
@@ -65,15 +68,7 @@ export default function MemoryGame() {
           endGame()
         }
       }, [cards]
-    )
-
-  //Handles game ends
-  const endGame  = () => {
-    if (gameEnded) return;
-    setGameEnded(true);
-    router.push(`/screens/ScorePage?score=${calculateScore()}`
     );
-  }
 
   // Handle card press
   const cardPressedHandler = (index) => {
@@ -83,8 +78,27 @@ export default function MemoryGame() {
 
   //Handles Scoring
   const calculateScore = () => {
-    return timeOfGame - timeLeft;
-  }
+    alert(selectedCards.length)
+    return  10 - (timeOfGame - timeLeft);
+  };
+
+    //Handles game ends
+  const endGame  = () => {
+    if (gameEnded) return;
+    setGameEnded(true);
+    router.push(`/screens/ScorePage?score=${calculateScore()}`
+    );
+  };
+
+  //Handles back button
+  const backHome = () => {
+    router.push('/screens/HomeScreen');
+  };
+
+  //Handles match start
+  const startMatch = () => {
+    setStartGame(true);
+  };
 
   //--------------------------------------------------------------------//
   //Use Effect
@@ -118,38 +132,60 @@ export default function MemoryGame() {
   }, [selectedCards]);
 
   return (
-    <main className="flex flex-col bg-gray-600 text-black h-screen justify-center items-center">
+    <main className="flex flex-col bg-gray-600 text-black min-h-screen min-w-screen justify-center items-center">
       {/* Header */}
-      <div className="text-center text-white mb-4">
-        <h1 className="text-2xl font-bold">Memory Game</h1>
+      <div className="relative flex flex-row items-center justify-between text-white mb-4 h-20 w-full px-4">
+        <button className='z-10' onClick={backHome}>
+          <img className='w-30 m-5' src='/assets/BackButton.gif' alt='Back Button' />
+        </button>
+        <h1 className="absolute left-1/2 transform -translate-x-1/2 text-5xl font-bold">Memory Game</h1>
       </div>
 
-      {/* Game Board */}
-    <div className=' grow flex-col lg:w-[50%] w-full bg-purple-600 flex rounded-lg shadow-lg justify-center items-center'>
+      <div className=''>
 
-      {/*Timer */}
-      <div className='flex flex-col justify-center  items-center'>
-        <img className='lg:w-30 w-20' src="/assets/GameTimer.gif" alt="Game Timer" />
-        <h1 className='text-7xl'>{timeLeft}</h1>
       </div>
 
-      {/*Middle */}
-      <div className="grid grid-cols-4 lg:grid-cols-6 gap-2 lg:mr-10 mr-0">
-          {cards.map((card, index) => (
-            <div
-              key={card.id}
-              onClick={() => cardPressedHandler(index)}
-              className="cursor-pointer lg:w-full m-5"
-            >
-              <img
-                src={card.isPick || selectedCards.includes(index) ? card.imgSrc : '/assets/memoryassets/backCard.gif'}
-                alt={card.title}
-                className="w-full"
-              />
-            </div>
-        ))}
+        {/* Game Board */}
+      <div className=' grow flex-col lg:w-[50%] w-full bg-purple-600 flex rounded-lg shadow-lg border-8 justify-center items-center'>
+
+        {/*Timer */}
+        <div className='flex flex-col justify-center  items-center'>
+          <img className='lg:w-30 w-20' src="/assets/GameTimer.gif" alt="Game Timer" />
+          <h1 className='text-7xl'>{timeLeft}</h1>
         </div>
-      </div>
+
+        {/*List of cards */}
+        <div className="grid grid-cols-4 lg:grid-cols-6 gap-2 lg:mr-10 mr-0">
+            {cards.map((card, index) => (
+              <div
+                key={card.id}
+                onClick={() => cardPressedHandler(index)}
+                className="cursor-pointer lg:w-full m-5"
+              >
+                <img
+                  src={card.isPick || selectedCards.includes(index) ? card.imgSrc : '/assets/memoryassets/backCard.gif'}
+                  alt={card.title}
+                  className="w-full"
+                />
+              </div>
+          ))}
+          </div>
+
+          {/*Button to start, replace with back to home screen button, and end button*/}
+          <div>
+            {!startGame ? (            
+              <button className='cursor-pointer' onClick={() => startMatch()}>
+                <img src='/assets/StartButton.gif' alt='Start button' />
+              </button>) : (
+                <div className=''>
+                  <button onClick={endGame}>
+                    <img src='/assets/EndButton.gif' alt='End Button' />
+                  </button>
+                </div>
+            )}
+          </div>
+
+        </div>
 
       {/* Footer */}
       <div className="bg-gray-400 w-full text-center text-white mt-4">

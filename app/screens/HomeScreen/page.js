@@ -17,7 +17,7 @@ export default function HomeScreen() {
     }
 
     return (
-        <main className="flex flex-col bg-gray-600 text-black h-screen">
+        <main className="flex flex-col bg-gray-600 text-black min-w-screen min-h-screen">
             {/* Header*/}
             <div className='justify-center items-center hidden lg:flex flex-col bg-gray-400 w-full text-white p-8 mb-10"'>
                 <div>

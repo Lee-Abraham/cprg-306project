@@ -63,7 +63,7 @@ export default function LogInScreen() {
     }
 
     return (
-        <main className="flex flex-col bg-gray-600 text-black h-screen">
+        <main className="flex flex-col bg-gray-600 text-black min-h-screen min-w-screen">
             {/*Header */}
             <div className="justify-center items-center hidden lg:flex flex-col w-full text-white">
                 <img className='w-120 h-80 mb-10' src='/assets/ThatIsMyGameBanner.gif' alt='My game banner'></img>
