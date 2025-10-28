@@ -88,7 +88,8 @@ export default function MemoryGame() {
   const endGame  = () => {
     if (gameEnded) return;
     setGameEnded(true);
-    router.push(`/screens/ScorePage?score=${calculateScore()}`
+    const score = calculateScore();
+    router.push(`/screens/ScorePage?score=${score}`
     );
   };
 
