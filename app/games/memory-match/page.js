@@ -141,36 +141,36 @@ export default function MemoryGame() {
   }, [selectedCards]);
 
   return (
-    <main className="flex flex-col bg-gray-600 text-black h-full overflow-hidden justify-center items-center">
+    <main className="flex flex-col bg-gray-600 text-black min-h-screen overflow-hidden items-center">
       {/* Header */}
       <div className="relative flex flex-row items-center justify-between text-white mb-4 h-18 w-full px-4">
         <button className='z-10' onClick={backHome}>
-          <img className='w-30 lg:mt-10 m-5 cursor-pointer' src='/assets/BackButton.gif' alt='Back Button' />
+          <img className='w-30 m-5 cursor-pointer' src='/assets/BackButton.gif' alt='Back Button' />
         </button>
-        <h1 className="lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2 ml-auto text-right text-2xl font-bold">Memory Game</h1>
+        <h1 className="lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2 ml-auto text-right lg:text-5xl text-2xl font-bold">Memory Game</h1>
       </div>
 
         {/* Game Board */}
-      <div className=' grow flex-col lg:w-[60%] w-full overflow-hidden bg-purple-600 flex rounded-lg shadow-lg border-8 justify-center items-center'>
+      <div className='grow flex-col lg:w-[60%] w-full bg-purple-600 flex rounded-lg shadow-lg border-8 overflow-hidden items-center'>
 
         {/*Timer */}
         <div className='flex flex-col justify-center  items-center'>
           <img className='w-20' src="/assets/GameTimer.gif" alt="Game Timer" />
-          <h1 className='text-5xl'>{timeLeft}</h1>
+          <h1 className='text-7xl'>{timeLeft}</h1>
         </div>
 
         {/*List of cards */}
-        <div className="grid grid-cols-4 lg:grid-cols-6 gap-2 mr-0">
+        <div className="grid grid-cols-4 lg:grid-cols-6 gap-2">
             {cards.map((card, index) => (
               <div
                 key={card.id}
                 onClick={() => cardPressedHandler(index)}
-                className="cursor-pointer m-5 justify-center items-center"
+                className="cursor-pointer m-5"
               >
                 <img
                   src={card.isPick || selectedCards.includes(index) ? card.imgSrc : '/assets/memoryassets/backCard.gif'}
                   alt={card.title}
-                  className="w-[90%]"
+                  className="w-full"
                 />
               </div>
           ))}
@@ -180,11 +180,11 @@ export default function MemoryGame() {
           <div>
             {!startGame ? (            
               <button className='cursor-pointer' onClick={() => startMatch()}>
-                <img className='w-30 lg:w-50' src='/assets/StartButton.gif' alt='Start button' />
+                <img className='w-30' src='/assets/StartButton.gif' alt='Start button' />
               </button>) : (
                 <div>
                   <button className='cursor-pointer' onClick={endGame}>
-                    <img className='w-30 lg:w-50' src='/assets/EndButton.gif' alt='End Button' />
+                    <img className='w-30' src='/assets/EndButton.gif' alt='End Button' />
                   </button>
                 </div>
             )}

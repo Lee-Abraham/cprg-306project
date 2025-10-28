@@ -66,14 +66,14 @@ export default function LogInScreen() {
         <main className="flex flex-col bg-gray-600 text-black min-h-screen overflow-hidden">
             {/*Header */}
             <div className="justify-center items-center hidden lg:flex flex-col w-full">
-                <img className='pt-10' src='/assets/ThatIsMyGameBanner.gif' alt='My game banner'></img>
+                <img className='pt-10 w-60' src='/assets/ThatIsMyGameBanner.gif' alt='My game banner'></img>
             </div>
 
             {/*Middle Section */}
 
             {/*Card 1*/}
-            <div className='grow  flex flex-col lg:flex-row mb-10 mt-10 items-center justify-center space-y-5 lg:space-y-0 lg:space-x-10'>
-                <div className="flex flex-col lg:flex-row shadow-lg rounded-lg w-full max-w-lg overflow-hidden">
+            <div className='grow overflow-hidden flex flex-col lg:flex-row mb-10 mt-10 items-center justify-center space-y-5 lg:space-y-0 lg:space-x-10'>
+                <div className="flex flex-col lg:flex-row shadow-lg rounded-lg w-full max-w-lg">
                     {/* Log In*/}
                     {!showSignUp && (
                         <div className='bg-purple-600  shadow-lg rounded-lg p-12 w-full max-w-lg text-center overflow-hidden'>
