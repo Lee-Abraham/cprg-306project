@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
-import {Suspense} from 'react'
 
 export default function ScorePageContent() {
   const searchParams = useSearchParams();
