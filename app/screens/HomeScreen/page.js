@@ -49,7 +49,7 @@ export default function HomeScreen() {
 
                 </div>
             ) : (
-                <div className='shadow-2xl flex-col z-20 justify-center items-center absolute right-0 bg-gray-500 h-full lg:w-[20%] w-[50%]'>
+                <div className='shadow-2xl flex-col z-20 justify-center items-center absolute right-0 bg-gray-500 h-full lg:w-[20%] w-[70%]'>
                     <button className='text-2xl pt-5 cursor-pointer ml-5 mt-5 z-10' onClick={showMenu} >X</button>
                     <img onClick={profilePage} className=" cursor-pointer w-20 absolute left-1/2 transform -translate-x-1/2 rounded-lg shadow-2xl" src='/assets/Profile.gif' alt="profile Icon" />
                 </div>)}
