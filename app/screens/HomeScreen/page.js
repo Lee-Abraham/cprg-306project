@@ -23,10 +23,10 @@ export default function HomeScreen() {
     }
 
     return (
-        <main className="flex flex-col bg-gray-600 text-black min-w-screen min-h-screen">
+        <main className="flex flex-col bg-gray-600 text-black min-w-screen min-h-screen overflow-hidden">
             {/* Header*/}
-            <div className="shadow-lg bg-gray-400 hidden lg:flex flex-row items-center w-full text-white px-4 h-40 relative">
-                <img onClick={profilePage} className="cursor-pointer w-34 rounded-lg shadow-2xl" src='/assets/Profile.gif' alt="profile Icon" />
+            <div className="shadow-lg bg-gray-400 hidden lg:flex flex-row items-center w-full text-white px-4 h-24 relative">
+                <img onClick={profilePage} className="cursor-pointer w-20 m-10 rounded-lg shadow-2xl" src='/assets/Profile.gif' alt="profile Icon" />
                 <h1 className="absolute left-1/2 transform -translate-x-1/2 text-5xl font-bold">My Game</h1>
 
             </div>
