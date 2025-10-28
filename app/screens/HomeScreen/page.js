@@ -39,7 +39,7 @@ export default function HomeScreen() {
         <main className="flex flex-col bg-gray-600 text-black min-h-screen overflow-hidden">
             {/* Header*/}
             <div className="shadow-lg bg-gray-400 flex-row items-center w-full text-white px-4 h-24 relative">
-                <h1 className="mt-5 absolute left-1/2 transform -translate-x-1/2 text-5xl font-bold">My Game</h1>
+                <h1 className="mt-5 absolute left-1/2 transform -translate-x-1/2 lg:text-5xl text-3xl font-bold">My Game</h1>
                 <button onClick={showMenu} className='bg-green-400 absolute right-1 m-5'>
                     <img alt='menu button'/> Hello
                 </button>
@@ -49,7 +49,7 @@ export default function HomeScreen() {
 
                 </div>
             ) : (
-                <div className='shadow-2xl flex-col z-20 justify-center items-center absolute right-0 bg-gray-500 h-full w-[20%]'>
+                <div className='shadow-2xl flex-col z-20 justify-center items-center absolute right-0 bg-gray-500 h-full lg:w-[20%] w-[50%]'>
                     <button className='text-2xl pt-5 cursor-pointer ml-5 mt-5 z-10' onClick={showMenu} >X</button>
                     <img onClick={profilePage} className=" cursor-pointer w-20 absolute left-1/2 transform -translate-x-1/2 rounded-lg shadow-2xl" src='/assets/Profile.gif' alt="profile Icon" />
                 </div>)}
