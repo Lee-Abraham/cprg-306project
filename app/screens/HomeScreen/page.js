@@ -40,7 +40,7 @@ export default function HomeScreen() {
             {/* Header*/}
             <div className="shadow-lg bg-gray-400 flex-row items-center w-full text-white px-4 h-24 relative">
                 <h1 className="mt-5 absolute left-1/2 transform -translate-x-1/2 text-5xl font-bold">My Game</h1>
-                <button onClick={showMenu} className='bg-green-400 absolute right-1'>
+                <button onClick={showMenu} className='bg-green-400 absolute right-1 m-5'>
                     <img alt='menu button'/> Hello
                 </button>
             </div>
