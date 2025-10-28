@@ -72,7 +72,7 @@ export default function LogInScreen() {
             {/*Middle Section */}
 
             {/*Card 1*/}
-            <div className='grow  flex flex-col lg:flex-row mb-10 items-center justify-center space-y-5 lg:space-y-0 lg:space-x-10'>
+            <div className='grow  flex flex-col lg:flex-row mb-10 mt-10 items-center justify-center space-y-5 lg:space-y-0 lg:space-x-10'>
                 <div className="flex flex-col lg:flex-row shadow-lg rounded-lg w-full max-w-lg overflow-hidden">
                     {/* Log In*/}
                     {!showSignUp && (
