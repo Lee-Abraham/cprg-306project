@@ -9,8 +9,6 @@ export default function ScorePageContent() {
   const score = searchParams.get('score');
 
   return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <p className='text-3xl pb-2'>{score}</p>
-        </Suspense>
+    <p className='text-3xl pb-2'>{score}</p>
   );
 }

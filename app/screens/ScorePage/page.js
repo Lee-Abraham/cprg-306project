@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import ScorePageContent from './pageContent';
+import {Suspense} from 'react'
 
 export default function ScorePage() {
     return (
@@ -15,8 +16,9 @@ export default function ScorePage() {
                 {/*Player score */}
                 <div className='m-5 bg-yellow-500/90 rounded-lg shadow-2xl lg:w-[30%] lg:h-30'>
                     <h1 className='text-5xl p-2'>Your Score: </h1>
-                    
-                <ScorePageContent />
+                <Suspense>
+                    <ScorePageContent />
+                </Suspense>
                 </div>
                 {/*List of other players score */}
                 <div>
