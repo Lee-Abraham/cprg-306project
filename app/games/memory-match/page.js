@@ -134,17 +134,13 @@ export default function MemoryGame() {
   }, [selectedCards]);
 
   return (
-    <main className="flex flex-col bg-gray-600 text-black min-h-full overflow-x-hidden justify-center items-center">
+    <main className="flex flex-col bg-gray-600 text-black min-h-screen overflow-y-hidden justify-center items-center">
       {/* Header */}
       <div className="relative flex flex-row items-center justify-between text-white mb-4 h-18 w-full px-4">
         <button className='z-10' onClick={backHome}>
           <img className='w-30 m-5 cursor-pointer' src='/assets/BackButton.gif' alt='Back Button' />
         </button>
         <h1 className="absolute left-1/2 transform -translate-x-1/2 text-5xl font-bold">Memory Game</h1>
-      </div>
-
-      <div className=''>
-
       </div>
 
         {/* Game Board */}
@@ -177,11 +173,11 @@ export default function MemoryGame() {
           <div>
             {!startGame ? (            
               <button className='cursor-pointer' onClick={() => startMatch()}>
-                <img src='/assets/StartButton.gif' alt='Start button' />
+                <img className='w-40 lg:w-full' src='/assets/StartButton.gif' alt='Start button' />
               </button>) : (
                 <div>
                   <button className='cursor-pointer' onClick={endGame}>
-                    <img src='/assets/EndButton.gif' alt='End Button' />
+                    <img className='w-40 lg:w-full' src='/assets/EndButton.gif' alt='End Button' />
                   </button>
                 </div>
             )}
