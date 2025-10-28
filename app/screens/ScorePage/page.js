@@ -1,12 +1,8 @@
 'use client';
 import React from 'react';
-import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import ScorePageContent from './pageContent';
 
-export default function ScorePage() {  
-    //State to get score from game
-    const searchParams = useSearchParams();
-    const score = searchParams.get('score');
+export default function ScorePage() {
     return (
         <main className='flex flex-col justify-center items-center bg-gray-600 h-screen overflow-hidden'>
             {/*Header */}
@@ -20,9 +16,7 @@ export default function ScorePage() {
                 <div className='m-5 bg-yellow-500/90 rounded-lg shadow-2xl lg:w-[30%] lg:h-30'>
                     <h1 className='text-5xl p-2'>Your Score: </h1>
                     
-                <Suspense fallback={<div>Loading...</div>}>
-                    <p className='text-3xl pb-2'>{score}</p>
-                </Suspense>
+                <ScorePageContent />
                 </div>
                 {/*List of other players score */}
                 <div>
