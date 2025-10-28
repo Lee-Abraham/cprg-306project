@@ -138,9 +138,9 @@ export default function MemoryGame() {
       {/* Header */}
       <div className="relative flex flex-row items-center justify-between text-white mb-4 h-18 w-full px-4">
         <button className='z-10' onClick={backHome}>
-          <img className='lg:w-30 w-15 m-5 cursor-pointer' src='/assets/BackButton.gif' alt='Back Button' />
+          <img className='w-30 m-5 cursor-pointer' src='/assets/BackButton.gif' alt='Back Button' />
         </button>
-        <h1 className="absolute mt-5 lg:mt-0 lg:left-1/2 right-1/2 transform -translate-x-1/2 lg:text-5xl text-2xl font-bold">Memory Game</h1>
+        <h1 className="absolute mt-5 lg:mt-0 lg:left-1/2 left-1 transform -translate-x-1/2 lg:text-5xl text-2xl font-bold">Memory Game</h1>
       </div>
 
         {/* Game Board */}
