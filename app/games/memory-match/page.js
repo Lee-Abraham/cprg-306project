@@ -140,7 +140,7 @@ export default function MemoryGame() {
         <button className='z-10' onClick={backHome}>
           <img className='w-30 m-5 cursor-pointer' src='/assets/BackButton.gif' alt='Back Button' />
         </button>
-        <h1 className="absolute mt-5 lg:mt-0 lg:left-1/2 left-1 transform -translate-x-1/2 lg:text-5xl text-2xl font-bold">Memory Game</h1>
+        <h1 className="lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2 ml-auto text-right lg:text-5xl text-2xl font-bold">Memory Game</h1>
       </div>
 
         {/* Game Board */}
