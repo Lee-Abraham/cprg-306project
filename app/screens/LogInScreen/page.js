@@ -146,7 +146,7 @@ export default function LogInScreen() {
             <div className='lg:hidden min-h-full flex grow flex-col bg-purple-600'>
                 {/* Log In*/}
                 {!showSignUp && (
-                    <div className=' bg-purple-600 p-12 w-full mt-5 h-full text-center'>
+                    <div className=' bg-purple-600 p-12 w-full mt-10 h-full text-center'>
                         <input
                             className='text-3xl w-[90%] h-12 border bg-white border-gray-300 shadow-lg text-center  rounded-md mr-3 ml-3 mb-3'
                             type="email" 
@@ -170,7 +170,7 @@ export default function LogInScreen() {
                 )}
                 {/*Sign Up*/}
                 { showSignUp && (
-                    <div className=' bg-purple-600 p-12 w-full mt-5 h-full text-center'>
+                    <div className=' bg-purple-600 p-12 w-full mt-10 h-full text-center'>
                         <input
                             className='text-3xl w-[90%] h-12 border bg-white border-gray-300 shadow-lg text-center  rounded-md mr-3 ml-3 mb-3'
                             type='email'
@@ -209,7 +209,7 @@ export default function LogInScreen() {
             </div>
 
             {/*Footer */}
-            <div className='bg-gray-400 text-white p-4 text-center w-full'>
+            <div className='bg-gray-400 text-white p-8 text-center w-full'>
                 <h1>
                     @Author: Lee Valera, Aileen Pearl, Kevin Yabut
                 </h1>
