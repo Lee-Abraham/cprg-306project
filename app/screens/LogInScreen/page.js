@@ -190,7 +190,7 @@ export default function LogInScreen() {
                         </button>
                     </div>
                 )}
-                <div className="border-t-2 grow flex flex-col lg:flex-row mt-10 shadow-lg w-full max-w-lg overflow-hidden">
+                <div className="border-t-2 grow flex flex-col lg:flex-row mt-10 w-full overflow-hidden">
                     {/* Sign Up Button -- Play Button */}
                     <div className='bg-purple-600 grow p-12 w-full text-center'>
                     {showSignUp ? 
