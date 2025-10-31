@@ -49,9 +49,8 @@ export default function ticTacToe() {
             <button
                 disabled={loading || status !== "ongoing"}
                 onClick={() => cellClick(row,col)}
-                className="w-48 h-48 bg-blue-300 border-2 border-black flex font-bold"
+                className="w-48 h-48 bg-blue-300 border-2 border-black ml-auto mr-auto"
             >   
-                {board[row][col] === "" && <img src='/assets/tictactoeassets/X.gif' />}
                 {board[row][col] === "X" && <img src='/assets/tictactoeassets/X.gif'/>}
                 {board[row][col] === "O" && <img src='/assets/tictactoeassets/O.gif'/>}
             </button>
@@ -134,20 +133,15 @@ export default function ticTacToe() {
                 <h1 className="lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2 ml-auto text-right lg:text-5xl text-2xl font-bold">Tic-Tac-Toe</h1>
             </div>
 
-            <div className='grow lg:w-[60%] w-full bg-purple-600 rounded-lg shadow-lg border-8 overflow-hidden text-center justify-center items-center'>
-                <div className='flex flex-col justify-center bg-green-200  items-center'>
+            <div className='grow lg:w-[60%] w-full bg-purple-600 rounded-lg shadow-lg border-8 overflow-hidden text-center flex flex-col justify-center items-center'>
+                <div className='flex flex-col justify-center  items-center'>
                     <img className='w-20' src="/assets/GameTimer.gif" alt="Game Timer" />
                     <p className='lg:text-7xl text-3xl'>
                         {seconds}
                     </p>
                 </div>
                 <div
-                className="bg-white grid grid-cols-3"
-                style={{
-                    backgroundImage: "url('/assets/tictactoeassets/board-bg.png')",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                }}
+                className="bg-white lg:w-[50%] w-full grid grid-cols-3 lg:justify-center lg:items-center justify-start items-start"
                 >
                 {board.map((row, i) =>
                     row.map((_, j) => (
