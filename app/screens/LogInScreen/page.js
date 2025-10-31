@@ -63,8 +63,8 @@ export default function LogInScreen() {
     }
 
     return (
-        <main className=" bg-gray-600 text-black min-h-screen overflow-hidden">
-            <div className='hidden lg:flex lg:flex-col'>
+        <main className=" bg-gray-600 text-black min-h-screen overflow-hidden flex flex-col">
+            <div className='hidden lg:flex lg:flex-col grow'>
                 {/*Header */}
                 <div className="justify-center items-center hidden lg:flex flex-col w-full">
                     <img className='pt-10 w-60' src='/assets/ThatIsMyGameBanner.gif' alt='My game banner'></img>
@@ -73,7 +73,7 @@ export default function LogInScreen() {
                 {/*Middle Section -- PC VIEW */}
 
                 {/*Card 1*/}
-                <div className='grow overflow-hidden flex flex-col lg:flex-row mb-10 mt-10 items-center justify-center space-y-5 lg:space-y-0 lg:space-x-10'>
+                <div className='grow flex flex-col lg:flex-row mb-10 mt-10 items-center justify-center space-y-5 lg:space-y-0 lg:space-x-10'>
                     <div className="flex flex-col lg:flex-row shadow-lg rounded-lg w-full max-w-lg">
                         {/* Log In*/}
                         {!showSignUp && (
@@ -146,7 +146,7 @@ export default function LogInScreen() {
             <div className='lg:hidden min-h-full flex grow flex-col bg-purple-600'>
                 {/* Log In*/}
                 {!showSignUp && (
-                    <div className=' bg-purple-600 p-12 w-full mt-10 h-full text-center'>
+                    <div className='bg-purple-600 p-12 w-full mt-10 h-full text-center'>
                         <input
                             className='text-3xl w-[90%] h-12 border bg-white border-gray-300 shadow-lg text-center  rounded-md mr-3 ml-3 mb-3'
                             type="email" 
@@ -170,7 +170,7 @@ export default function LogInScreen() {
                 )}
                 {/*Sign Up*/}
                 { showSignUp && (
-                    <div className=' bg-purple-600 p-12 w-full mt-10 h-full text-center'>
+                    <div className='bg-purple-600 p-12 w-full mt-10 h-full text-center'>
                         <input
                             className='text-3xl w-[90%] h-12 border bg-white border-gray-300 shadow-lg text-center  rounded-md mr-3 ml-3 mb-3'
                             type='email'
