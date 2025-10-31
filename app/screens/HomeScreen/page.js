@@ -12,11 +12,11 @@ export default function HomeScreen() {
     const gameMemoryMatch = {
         src: '/assets/memoryassets/memoryCardLogo.gif',
         name: 'Memory Match',
-        desc: 'Pick the correct card that is matching'
+        desc: 'Pick matching cards'
     }
 
     const ticTacToe = {
-        src: null,
+        src: '/assets/tictactoeassets/tictactoeCardLogo.gif',
         name: 'Tic-Tac-Toe',
         desc: 'Align three of the same symbol'
     }
