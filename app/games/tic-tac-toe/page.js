@@ -2,6 +2,8 @@
 
 import React, { useState, Fragment, useEffect } from 'react';
 import {useRouter} from 'next/navigation';
+import { ticTacWin } from './ticTacWin';
+import {bestMove} from './ticTocAI'
 
 export default function ticTacToe() {
 
@@ -35,10 +37,13 @@ export default function ticTacToe() {
     const [loading, setLoading] = useState(false);
 
     //Timer
-    const [seconds, setSeconds] = useState(60);
+    const [seconds, setSeconds] = useState(10);
 
     //Game Started
-    const [start, setStart]  = useState(false)
+    const [start, setStart]  = useState(false);
+
+    //Total  wins
+    const [totalWin, setTotalWin] = useState(0);
 
     //-----------------------------------------------------------------------------//
     //Functions
@@ -49,7 +54,7 @@ export default function ticTacToe() {
             <button
                 disabled={loading || status !== "ongoing"}
                 onClick={() => cellClick(row,col)}
-                className="w-48 h-48 bg-blue-300 border-2 border-black ml-auto mr-auto"
+                className="lg:w-48 lg:h-48  w-40 h-40 bg-blue-300 border-2 border-black pl-auto pr-auto"
             >   
                 {board[row][col] === "X" && <img src='/assets/tictactoeassets/X.gif'/>}
                 {board[row][col] === "O" && <img src='/assets/tictactoeassets/O.gif'/>}
@@ -60,39 +65,46 @@ export default function ticTacToe() {
     //Handles when one of the cell is pressed
     const cellClick = (row, col) => {
         if (board[row][col] === "" && currentPlayer ==="X" && status === "ongoing" && start) {
-            board[row][col] = "X";
-            setBoard([...board])
-            setCurrentPlayer("O")
-        }
-        else if (board[row][col] === "" && currentPlayer ==="O" && status === "ongoing" && start) {
-            board[row][col] = "O";
-            setBoard([...board])
-            setCurrentPlayer("X")
+            const newBoard = [...board];
+            newBoard[row][col] = "X";
+            setBoard(newBoard)
+
+            //Ends game
+            if (ticTacWin(newBoard, "X")) {
+                setStatus("ended");
+                endGame("X");
+            }
+            else if (isDraw(newBoard)) {
+                setStatus("ended");
+                endGame("draw")
+            }
+            else {
+                setCurrentPlayer("O")
+            }
         }
     }
 
     //Handles game ends
-    const endGame  = () => {
-        if (status === "ongoing") return;
-        const score = calculateScore();
+    const endGame = (result) => {
+    let finalScore = getTotalWin();
 
-        //If score is bellow zero.
-        if (score < 0) {
-        const score = 0;
-        router.push(`/screens/ScorePage?score=${score}`);
-        return;
+        if (result === "draw") {
+            router.push(`/screens/ScorePage?wins=${finalScore}&result=draw`);
+        } else if (result === "X" || result === "O") {
+            router.push(`/screens/ScorePage?wins=${finalScore}&winner=${result}`);
+        } else {
+            router.push(`/screens/ScorePage?wins=${finalScore}`);
         }
-        router.push(`/screens/ScorePage?score=${score}`);
     };
 
     //Handles end button
     const endButton  = ()  => {
         setStatus('ended');
-        endGame
+        endGame();
     }
 
     //Handles score calculation
-    const calculateScore = () => {
+    const getTotalWin = () => {
 
         return seconds;
     }
@@ -101,28 +113,58 @@ export default function ticTacToe() {
     const startMatch = () => {
         setStart(true);
     };
+    
+    //Handles match draw
+    const isDraw = (board) => {
+        return board.flat().every(cell => cell  !== "");
+    }
 
     //Handles timer and end of game when timer hit 0
     useEffect(() => {
 
-        let interval;
+            let interval;
 
-        if (seconds === 0) {
-        setStatus('ended');
-        endGame
-        }
+            if (seconds === 0) {
+                setStatus('ended');
+                endGame("O");
+            }
 
-        if (currentPlayer === "X" && status === "ongoing" && start) {
-            interval = setInterval(
-                () => {
-                    setSeconds(prev => prev - 1);
-                }, 1000
-            );
-        }
-        
+            if (currentPlayer === "X" && status === "ongoing" && start) {
+                interval = setInterval(
+                    () => {
+                        setSeconds(prev => prev - 1);
+                    }, 1000
+                );
+            }
 
         return () => clearInterval(interval);
-    }, [currentPlayer][status]);
+    }, [currentPlayer, status, seconds, start]);
+
+     //Handles opponent moves
+        useEffect(() => {
+        if (currentPlayer === "O" && status === "ongoing" && start) {
+            const aiTimeout = setTimeout(() => {
+            const [i, j] = bestMove(board) || [0, 0];
+            const newBoard = [...board];
+            newBoard[i][j] = "O";
+            setBoard(newBoard);
+
+            if (ticTacWin(newBoard, "O")) {
+                setStatus('ended');
+                endGame("O");  
+            } else if (isDraw(newBoard)) {
+                setStatus('ended');
+                endGame("draw");
+            } else {
+                setCurrentPlayer("X");
+            }
+        }, 1000);
+
+            return () => clearTimeout(aiTimeout);
+        }
+    }, [currentPlayer, board, status, start]);
+
+
     return (
         <main className="flex flex-col bg-gray-600 text-black min-h-screen overflow-hidden items-center">
             {/* Header */}
