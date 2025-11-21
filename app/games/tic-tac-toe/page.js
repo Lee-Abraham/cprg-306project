@@ -54,7 +54,7 @@ export default function ticTacToe() {
             <button
                 disabled={loading || status !== "ongoing"}
                 onClick={() => cellClick(row,col)}
-                className="lg:w-48 lg:h-48  w-40 h-40 bg-blue-300 border-2 border-black pl-auto pr-auto"
+                className="lg:w-48 lg:h-48 h-40 w-40 bg-blue-300 border-2 border-black"
             >   
                 {board[row][col] === "X" && <img src='/assets/tictactoeassets/X.gif'/>}
                 {board[row][col] === "O" && <img src='/assets/tictactoeassets/O.gif'/>}
@@ -183,7 +183,7 @@ export default function ticTacToe() {
                     </p>
                 </div>
                 <div
-                className="bg-white lg:w-[50%] w-full grid grid-cols-3 lg:justify-center lg:items-center justify-start items-start"
+                    className="bg-white grid grid-cols-3 lg:justify-center lg:items-center justify-start items-start"
                 >
                 {board.map((row, i) =>
                     row.map((_, j) => (
