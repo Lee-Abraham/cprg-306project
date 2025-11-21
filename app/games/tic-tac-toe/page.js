@@ -166,7 +166,7 @@ export default function ticTacToe() {
 
 
     return (
-        <main className="flex flex-col bg-gray-600 text-black min-h-screen overflow-hidden items-center">
+        <main className="grow overflow-hidden flex flex-col bg-gray-600 text-black items-center">
             {/* Header */}
             <div className="relative flex flex-row items-center justify-between text-white mb-4 h-18 w-full px-4">
                 <button className='z-10' onClick={backHome}>
@@ -175,7 +175,7 @@ export default function ticTacToe() {
                 <h1 className="lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2 ml-auto text-right lg:text-5xl text-2xl font-bold">Tic-Tac-Toe</h1>
             </div>
 
-            <div className='grow lg:w-[60%] w-full bg-purple-600 rounded-lg shadow-lg border-8 overflow-hidden text-center flex flex-col justify-center items-center'>
+            <div className=' lg:w-[60%] w-full bg-purple-600 rounded-lg shadow-lg border-8 text-center flex flex-col justify-center items-center'>
                 <div className='flex flex-col justify-center  items-center'>
                     <img className='w-20' src="/assets/GameTimer.gif" alt="Game Timer" />
                     <p className='lg:text-7xl text-3xl'>
