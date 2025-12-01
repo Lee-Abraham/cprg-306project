@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import {auth, dbf, storage} from '../../../lib/firebase'
 import {doc, setDoc} from 'firebase/firestore';
 import {useUser} from '../../components/UserProvider';
-import {EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
+import {EmailAuthProvider, reauthenticateWithCredential, updatePassword, updateEmail, sendSignInLinkToEmail } from 'firebase/auth';
 import {ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function SettingsPage() {
@@ -15,6 +15,7 @@ export default function SettingsPage() {
 
   //Get db of user
   const {profile, loading} = useUser();
+
 
   //Password change
   //When user press change password
@@ -31,6 +32,10 @@ export default function SettingsPage() {
   const [email, setEmail] = useState('');
   //Profile image
   const [imgUrl, setImgUrl] = useState('');
+  //Loading for profile img
+  const [uploading, setUploading] = useState(false);
+  //PreviewUrl
+  const [previewUrl, setPreviewUrl] = useState('');
 
 //-------------------------------------------Navigation-------------------------------------------
   //When user press home button
@@ -104,6 +109,14 @@ export default function SettingsPage() {
     }
   }, [profile]);
 
+  //Remove old url
+  useEffect(() => {
+      return () => {
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+      };
+    }, [previewUrl]);
+
+
 
   const onShowEditProf = () => {
     if (!profEd) {
@@ -114,54 +127,50 @@ export default function SettingsPage() {
     }
   };
 
+  //Save new profile
   const onSaveProfile = async (e) => {
-
-    e.preventDefault()
-    //Get current user
-    const user = auth.currentUser
-
-    //Check if there is a user log in
+    e.preventDefault();
+    const user = auth.currentUser;
     if (!user) {
       alert('You must be logged in to edit your profile');
       return;
     }
 
-    //Error handling
     try {
-      //Reference to user
-      const userRef = doc(dbf, 'users', user.uid)
-
+      const userRef = doc(dbf, 'users', user.uid);
       const updates = {};
 
-      //Double check that the data is not the same as the current data.
       if (username && username !== profile?.username) updates.username = username;
-      if (email && email !== profile?.email) updates.email = email;
       if (imgUrl && imgUrl !== profile?.avatarUrl) updates.avatarUrl = imgUrl;
 
-      // If nothing changed, don't write
-      if (Object.keys(updates).length === 0) {
-        alert('No changes to save.');
-        return;
+      //If email changed, start reauthentication via link
+      if (email && email !== user.email) {
+        const actionCodeSettings = {
+          url: `${window.location.origin}/auth/reauth-complete`,
+          handleCodeInApp: true,
+        };
+
+        // Save email locally so we can complete sign-in later
+        window.localStorage.setItem('emailForReauth', user.email);
+
+        await sendSignInLinkToEmail(auth, user.email, actionCodeSettings);
+        alert('We sent a reauthentication link to your email. Click it to continue.');
+        return; // Stop here until user clicks link
       }
 
-      //Save/update data
-      await setDoc(
-        userRef, {
-          username,
-          email,
-          avatarUrl: imgUrl,
-        },
-        {merge: true} //Only update fields that have been filled.
-      );
-
-      alert('Profile have been edited');
-
+      if (Object.keys(updates).length > 0) {
+        await setDoc(userRef, updates, { merge: true });
+        alert('Profile updated successfully!');
+      } else {
+        alert('No changes to save.');
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile.');
     }
-    catch (error) {
-      console.error('Error trying to edit profile: ', error);
-    }
-
   };
+
+
 
 //----------------------------------------End Edit Profile----------------------------------------
 
@@ -223,25 +232,32 @@ export default function SettingsPage() {
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
                       const user = auth.currentUser;
-
                       if (!file) return;
                       if (!user) {
                         alert('You must be logged in to upload a profile picture.');
                         return;
                       }
 
+                      // New preview (revoke the previous one)
+                      if (previewUrl) URL.revokeObjectURL(previewUrl);
+                      const localPreview = URL.createObjectURL(file);
+                      setPreviewUrl(localPreview);
+
                       try {
+                        setUploading(true);
                         const filePath = `profileImages/${user.uid}/${file.name}`;
                         const storageRef = ref(storage, filePath);
 
+                        // If uploads can be large/unstable, consider uploadBytesResumable
                         await uploadBytes(storageRef, file);
                         const downloadURL = await getDownloadURL(storageRef);
 
-                        setImgUrl(downloadURL); // This is the permanent URL
-                        alert('Image uploaded successfully!');
+                        setImgUrl(downloadURL); // Permanent URL for Firestore
                       } catch (error) {
                         console.error('Error uploading image:', error);
                         alert('Failed to upload image.');
+                      } finally {
+                        setUploading(false);
                       }
                     }}
                   />
