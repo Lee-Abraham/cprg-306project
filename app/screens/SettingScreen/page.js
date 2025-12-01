@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import {auth, dbf, storage} from '../../../lib/firebase'
 import {doc, setDoc} from 'firebase/firestore';
 import {useUser} from '../../components/UserProvider';
-import {EmailAuthProvider, reauthenticateWithCredential, updatePassword, updateEmail, sendSignInLinkToEmail } from 'firebase/auth';
+import {EmailAuthProvider, reauthenticateWithCredential, updatePassword, updateEmail, sendSignInLinkToEmail, signInWithEmailLink } from 'firebase/auth';
 import {ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function SettingsPage() {
@@ -100,51 +100,12 @@ export default function SettingsPage() {
 
 //------------------------------------------Edit Profile------------------------------------------
 
-//Get current user data
-  useEffect(() => {
-    if (profile) {
-      setUsername(profile.username || '');
-      setEmail(profile.email || '');
-      setImgUrl(profile.avatarUrl || '');
-    }
-  }, [profile]);
-
   //Remove old url
   useEffect(() => {
       return () => {
         if (previewUrl) URL.revokeObjectURL(previewUrl);
       };
     }, [previewUrl]);
-  
-  useEffect(() => {
-    const completeReauth = async () => {
-      if (isSignInWithEmailLink(auth, window.location.href)) {
-        let email = window.localStorage.getItem('emailForReauth') || new URLSearchParams(window.location.search).get('oldEmail');
-        const newEmail = window.localStorage.getItem('newEmail');
-
-        if (!email || !newEmail) {
-          email = prompt('Please enter your current email to continue:');
-          if (!email) {
-            alert('Email is required.');
-            return;
-          }
-        }
-
-        try {
-          await signInWithEmailLink(auth, email, window.location.href);
-          await updateEmail(auth.currentUser, newEmail);
-
-          alert('Email updated successfully!');
-          router.push('../../screens/SettingScreen');
-        } catch (error) {
-          console.error('Error completing reauthentication or updating email:', error);
-          alert('Failed to update email.');
-        }
-      }
-    };
-
-    completeReauth();
-  }, [router]);
 
   const onShowEditProf = () => {
     if (!profEd) {
@@ -189,7 +150,12 @@ export default function SettingsPage() {
       if (Object.keys(updates).length > 0) {
         await setDoc(userRef, updates, { merge: true });
         alert('Profile updated successfully!');
-      } else {
+        return;
+      } else if (email && email !== user.email) {
+        alert('Profile updated successfully!');
+        return;
+      }
+      else {
         alert('No changes to save.');
       }
     } catch (error) {
@@ -234,7 +200,7 @@ export default function SettingsPage() {
                   <input
                     value={username}
                     type="text"
-                    placeholder="Enter username"
+                    placeholder="Enter new username"
                     className="w-full px-3 py-2 rounded bg-gray-600 text-white focus:outline-none"
                     onChange={(e) => setUsername(e.target.value)}
                   />
@@ -246,7 +212,7 @@ export default function SettingsPage() {
                   <input
                     value={email}
                     type="email"
-                    placeholder="Enter email"
+                    placeholder="Enter new email"
                     className="w-full px-3 py-2 rounded bg-gray-600 text-white focus:outline-none"
                     onChange={(e) => setEmail(e.target.value)}
                   />
