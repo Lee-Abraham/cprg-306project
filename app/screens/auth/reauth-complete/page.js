@@ -3,7 +3,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth } from '../../../lib/firebase';
+import { auth } from '../../../../lib/firebase';
 import { isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
 
 export default function ReauthCompletePage() {
