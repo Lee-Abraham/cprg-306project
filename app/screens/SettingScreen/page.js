@@ -146,9 +146,10 @@ export default function SettingsPage() {
       //If email changed, start reauthentication via link
       if (email && email !== user.email) {
         const actionCodeSettings = {
-          url: `${window.location.origin}/auth/reauth-complete`,
+          url: `${window.location.origin}/screens/auth/reauth-complete`,
           handleCodeInApp: true,
         };
+      
 
         // Save email locally so we can complete sign-in later
         window.localStorage.setItem('emailForReauth', user.email);
