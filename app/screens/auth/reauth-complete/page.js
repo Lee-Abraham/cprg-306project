@@ -20,7 +20,7 @@ export default function ReauthCompletePage() {
       signInWithEmailLink(auth, email, window.location.href)
         .then(() => {
           alert('Reauthentication successful! You can now update your email or password.');
-          router.push('/screens/SettingScreen'); // Redirect back to settings
+          router.push('../../screens/SettingScreen'); // Redirect back to settings
         })
         .catch((error) => {
           console.error('Error completing reauthentication:', error);
