@@ -54,21 +54,55 @@ export default function SettingsPage() {
     }
   }
 
-
   const handlePasswordChange = async (oldPassword, newPassword) => {
+    const user = auth.currentUser;
+
+    if (!user) {
+      alert("No user is signed in.");
+      return;
+    }
+
+    // Guard: offline
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      alert("You appear to be offline. Please check your connection and try again.");
+      return;
+    }
+
     try {
-      // Step 1: Re-authenticate
+      // 1) Re-authenticate (required for sensitive actions)
       const credential = EmailAuthProvider.credential(user.email, oldPassword);
       await reauthenticateWithCredential(user, credential);
 
-      // Step 2: Update password
+      // 2) Update password
       await updatePassword(user, newPassword);
+
       alert("Password updated successfully!");
     } catch (error) {
-      console.error(error);
-      alert(error.message);
+      console.error("Password change error:", error);
+
+      // Helpful mapping for common errors
+      switch (error.code) {
+        case "auth/network-request-failed":
+          alert(
+            "Network request failed. Check your internet connection or disable ad‑blockers/privacy plugins that may be blocking Firebase."
+          );
+          break;
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+          alert("Old password is incorrect. Please try again.");
+          break;
+        case "auth/too-many-requests":
+          alert("Too many attempts. Please wait a minute and try again.");
+          break;
+        case "auth/requires-recent-login":
+          alert("Please sign out and sign back in, then try again.");
+          break;
+        default:
+          alert(error.message);
+      }
     }
   };
+
 
 
 
