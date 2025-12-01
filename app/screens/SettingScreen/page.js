@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect} from 'react';
 import { useRouter } from 'next/navigation';
-import {auth, dbf} from '../../../lib/firebase'
+import {auth, dbf, storage} from '../../../lib/firebase'
 import {doc, setDoc} from 'firebase/firestore';
 import {useUser} from '../../components/UserProvider';
-import {EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
+import {EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
+import {ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function SettingsPage() {
 
@@ -52,6 +53,7 @@ export default function SettingsPage() {
 
 
 
+
   const handlePasswordChange = async (oldPassword, newPassword) => {
     const user = auth.currentUser;
     if (!user) return alert("No user signed in");
@@ -59,19 +61,30 @@ export default function SettingsPage() {
     if (!navigator.onLine) return alert("You appear offline. Check your connection.");
 
     try {
-      const credential = EmailAuthProvider.credential(user.email, oldPassword);
-      await reauthenticateWithCredential(user, credential);
+      // Reauthenticate if old password is provided
+      if (oldPassword) {
+        const credential = EmailAuthProvider.credential(user.email, oldPassword);
+        await reauthenticateWithCredential(user, credential);
+      }
+
       await updatePassword(user, newPassword);
       alert("Password updated successfully!");
     } catch (error) {
       console.error("Password change error:", error);
-      if (error.code === "auth/network-request-failed") {
-        alert("Network request failed. Disable ad-blockers or check your internet.");
-      } else {
-        alert(error.message);
+
+      switch (error.code) {
+        case "auth/network-request-failed":
+          alert("Network request failed. Check authorized domains or network settings.");
+          break;
+        case "auth/requires-recent-login":
+          alert("Please log in again before changing your password.");
+          break;
+        default:
+          alert(error.message);
       }
     }
   };
+
 
 
 
@@ -207,12 +220,28 @@ export default function SettingsPage() {
                   <input
                     type="file"
                     accept="image/*"
-                    className="w-full bg-purple-500 hover:bg-purple-600 text-white"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        const imageUrl = URL.createObjectURL(file); // Creates a temporary URL for preview
-                        setImgUrl(imageUrl);
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      const user = auth.currentUser;
+
+                      if (!file) return;
+                      if (!user) {
+                        alert('You must be logged in to upload a profile picture.');
+                        return;
+                      }
+
+                      try {
+                        const filePath = `profileImages/${user.uid}/${file.name}`;
+                        const storageRef = ref(storage, filePath);
+
+                        await uploadBytes(storageRef, file);
+                        const downloadURL = await getDownloadURL(storageRef);
+
+                        setImgUrl(downloadURL); // This is the permanent URL
+                        alert('Image uploaded successfully!');
+                      } catch (error) {
+                        console.error('Error uploading image:', error);
+                        alert('Failed to upload image.');
                       }
                     }}
                   />
@@ -263,7 +292,7 @@ export default function SettingsPage() {
 
                 <button
                   className="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 rounded"
-                  onClick={handlePasswordChange}
+                  onClick={() => handlePasswordChange(oldPassword, newPassword)}
                 >
                   Update Password
                 </button>
