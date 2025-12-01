@@ -115,8 +115,36 @@ export default function SettingsPage() {
         if (previewUrl) URL.revokeObjectURL(previewUrl);
       };
     }, [previewUrl]);
+  
+  useEffect(() => {
+    const completeReauth = async () => {
+      if (isSignInWithEmailLink(auth, window.location.href)) {
+        let email = window.localStorage.getItem('emailForReauth') || new URLSearchParams(window.location.search).get('oldEmail');
+        const newEmail = window.localStorage.getItem('newEmail');
 
+        if (!email || !newEmail) {
+          email = prompt('Please enter your current email to continue:');
+          if (!email) {
+            alert('Email is required.');
+            return;
+          }
+        }
 
+        try {
+          await signInWithEmailLink(auth, email, window.location.href);
+          await updateEmail(auth.currentUser, newEmail);
+
+          alert('Email updated successfully!');
+          router.push('../../screens/SettingScreen');
+        } catch (error) {
+          console.error('Error completing reauthentication or updating email:', error);
+          alert('Failed to update email.');
+        }
+      }
+    };
+
+    completeReauth();
+  }, [router]);
 
   const onShowEditProf = () => {
     if (!profEd) {
@@ -143,20 +171,20 @@ export default function SettingsPage() {
       if (username && username !== profile?.username) updates.username = username;
       if (imgUrl && imgUrl !== profile?.avatarUrl) updates.avatarUrl = imgUrl;
 
-      //If email changed, start reauthentication via link
       if (email && email !== user.email) {
         const actionCodeSettings = {
-          url: `${window.location.origin}/screens/auth/reauth-complete`,
+          url: `${window.location.origin}/screens/auth/reauth-complete?oldEmail=${encodeURIComponent(user.email)}`,
           handleCodeInApp: true,
         };
-      
 
-        // Save email locally so we can complete sign-in later
+        // Save both emails locally
         window.localStorage.setItem('emailForReauth', user.email);
+        window.localStorage.setItem('newEmail', email);
 
         await sendSignInLinkToEmail(auth, user.email, actionCodeSettings);
+
         alert('We sent a reauthentication link to your email. Click it to continue.');
-        return; // Stop here until user clicks link
+        return;
       }
 
       if (Object.keys(updates).length > 0) {
@@ -170,6 +198,7 @@ export default function SettingsPage() {
       alert('Failed to update profile.');
     }
   };
+
 
 
 
