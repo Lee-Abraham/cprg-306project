@@ -86,8 +86,6 @@ export default function ticTacToe() {
 
     //Handles game ends
     const endGame = (result) => {
-    let finalScore = getTotalWin();
-
         if (result === "draw") {
             router.push(`/screens/ScorePage?wins=${finalScore}&result=draw`);
         } else if (result === "X" || result === "O") {
@@ -101,12 +99,6 @@ export default function ticTacToe() {
     const endButton  = ()  => {
         setStatus('ended');
         endGame();
-    }
-
-    //Handles score calculation
-    const getTotalWin = () => {
-
-        return seconds;
     }
 
       //Handles match start

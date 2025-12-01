@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React from 'react';
 import {useState} from 'react';
@@ -28,7 +28,7 @@ export default function LogInScreen() {
     const LoginHandler = async () => {
         try {
             await signInWithEmailAndPassword(auth, email, password)
-            router.push('screens/HomeScreen')
+            router.push('../screens/HomeScreen')
         }
         catch  (error) {
             alert('Login failed: ' +  error.message)
@@ -59,7 +59,7 @@ export default function LogInScreen() {
 
     //Handles when user don't want to log in/ sign up
     const GuessHandler = () => {
-        router.push('screens/HomeScreen')
+        router.push('../screens/HomeScreen')
     }
 
     return (
