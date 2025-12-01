@@ -5,13 +5,9 @@ import { useRouter } from 'next/navigation';
 import {auth, dbf} from '../../../lib/firebase'
 import {doc, setDoc} from 'firebase/firestore';
 import {useUser} from '../../components/UserProvider';
-import { getAuth, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
+import {EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
 
 export default function SettingsPage() {
-  //Get auth from firebase
-  const auth = getAuth();
-  //Check current user.
-  const user = auth.currentUser;
 
   //Navigation
   const router = useRouter();
@@ -54,54 +50,30 @@ export default function SettingsPage() {
     }
   }
 
+
+
   const handlePasswordChange = async (oldPassword, newPassword) => {
     const user = auth.currentUser;
+    if (!user) return alert("No user signed in");
 
-    if (!user) {
-      alert("No user is signed in.");
-      return;
-    }
-
-    // Guard: offline
-    if (typeof navigator !== "undefined" && !navigator.onLine) {
-      alert("You appear to be offline. Please check your connection and try again.");
-      return;
-    }
+    if (!navigator.onLine) return alert("You appear offline. Check your connection.");
 
     try {
-      // 1) Re-authenticate (required for sensitive actions)
       const credential = EmailAuthProvider.credential(user.email, oldPassword);
       await reauthenticateWithCredential(user, credential);
-
-      // 2) Update password
       await updatePassword(user, newPassword);
-
       alert("Password updated successfully!");
     } catch (error) {
       console.error("Password change error:", error);
-
-      // Helpful mapping for common errors
-      switch (error.code) {
-        case "auth/network-request-failed":
-          alert(
-            "Network request failed. Check your internet connection or disable ad‑blockers/privacy plugins that may be blocking Firebase."
-          );
-          break;
-        case "auth/wrong-password":
-        case "auth/invalid-credential":
-          alert("Old password is incorrect. Please try again.");
-          break;
-        case "auth/too-many-requests":
-          alert("Too many attempts. Please wait a minute and try again.");
-          break;
-        case "auth/requires-recent-login":
-          alert("Please sign out and sign back in, then try again.");
-          break;
-        default:
-          alert(error.message);
+      if (error.code === "auth/network-request-failed") {
+        alert("Network request failed. Disable ad-blockers or check your internet.");
+      } else {
+        alert(error.message);
       }
     }
   };
+
+
 
 
 
@@ -264,7 +236,7 @@ export default function SettingsPage() {
 
           {!passChange? null : (
             // Div for password change
-            <div className="p-4 bg-gray-100 ml-12 mt-2 rounded shadow-md w-full max-w-sm">
+            <div className="p-4 bg-gray-100 lg:ml-12 mt-2 rounded shadow-md w-full max-w-sm">
                 <h2 className="text-lg font-semibold mb-4">Change Password</h2>
                 
                 <div className="mb-3">
