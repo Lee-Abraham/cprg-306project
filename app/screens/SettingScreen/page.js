@@ -184,7 +184,6 @@ export default function SettingsPage() {
         await sendSignInLinkToEmail(auth, user.email, actionCodeSettings);
 
         alert('We sent a reauthentication link to your email. Click it to continue.');
-        return;
       }
 
       if (Object.keys(updates).length > 0) {
