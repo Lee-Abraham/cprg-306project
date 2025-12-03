@@ -2,10 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import {useRouter} from 'next/navigation'
+import {auth} from '../../../lib/firebase';
+import {addRecentGame} from '../../components/AddGame';
 
 export default function MemoryGame() {
   const timeOfGame = 60;
   const router =  useRouter();
+  const game = {name: 'Memory Game', img: '/assets/memoryassets/memoryCardLogo.gif'}
 
   // Initial card list
   const arrOfCard = [
@@ -86,11 +89,13 @@ export default function MemoryGame() {
 
     //Handles game ends
   const endGame  = () => {
+    const user = auth.currentUser;
+
     if (gameEnded) return;
     setGameEnded(true);
     const score = calculateScore();
     //If score is bellow zero.
-
+    addRecentGame(user.uid, game).catch(console.error);
     if (score < 0) {
       const score = 0;
       router.push(`/screens/ScorePage?score=${score}`);
