@@ -148,7 +148,6 @@ export default function HomeScreen() {
                     </li>
                     <li className="cursor-pointer hover:text-yellow-300" onClick={leaderboardPage}>Leaderboard</li>
                     <li className="cursor-pointer hover:text-yellow-300" onClick={settingPage}>Settings</li>
-                    <li className="cursor-pointer hover:text-yellow-300">Achievements</li>
                 </ul>
 
                 {/* Sign Out */}

@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 import {auth, dbf, storage} from '../../../lib/firebase'
 import {doc, setDoc} from 'firebase/firestore';
 import {useUser} from '../../components/UserProvider';
-import {EmailAuthProvider, reauthenticateWithCredential, updatePassword, updateEmail, sendSignInLinkToEmail, signInWithEmailLink } from 'firebase/auth';
+import {EmailAuthProvider, reauthenticateWithCredential, updatePassword, sendSignInLinkToEmail } from 'firebase/auth';
 import {ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import DeleteAccountModal from '../../components/DeleteAccount';
 
 export default function SettingsPage() {
 
@@ -16,6 +17,8 @@ export default function SettingsPage() {
   //Get db of user
   const {profile, loading} = useUser();
 
+  //Notification
+  const [gameAlerts, setGameAlerts] = useState(false);
 
   //Password change
   //When user press change password
@@ -37,6 +40,9 @@ export default function SettingsPage() {
   //PreviewUrl
   const [previewUrl, setPreviewUrl] = useState('');
 
+  //Delete Account
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
 //-------------------------------------------Navigation-------------------------------------------
   //When user press home button
   const goHome = () => {
@@ -44,6 +50,56 @@ export default function SettingsPage() {
   };
 
 //---------------------------------------End Navigation-------------------------------------------
+
+//------------------------------------------Delete Account-------------------------------------------
+  const deleteAccount = async () => {
+    if (!showDeleteModal) {
+      setShowDeleteModal(true);
+    }
+    else {
+      setShowDeleteModal(false);
+    }
+  };
+
+//------------------------------------------End Delete Account----------------------------------------
+
+//-------------------------------------------Notification-------------------------------------------
+
+// Load initial values from Firestore profile
+  useEffect(() => {
+    if (profile?.notifications) {
+      setGameAlerts(profile.notifications.gameAlerts || false);
+    }
+  }, [profile]);
+
+  // Firestore update function
+  const updateNotificationSetting = async (field, value) => {
+    const user = auth.currentUser;
+    if (!user) return alert('You must be logged in.');
+
+    try {
+      const userRef = doc(dbf, 'users', user.uid);
+      await setDoc(userRef, {
+        notifications: {
+          [field]: value
+        }
+      }, { merge: true });
+    } catch (error) {
+      console.error('Error updating notifications:', error);
+      alert('Failed to update notification setting.');
+    }
+  };
+
+  // Handlers for each checkbox
+  const handleGameAlertsChange = (e) => {
+    const value = e.target.checked;
+    setGameAlerts(value);
+    updateNotificationSetting('gameAlerts', value);
+  };
+
+
+
+//-------------------------------------------End Notification---------------------------------------
 
 //-----------------------------------------Change Password----------------------------------------
 
@@ -313,33 +369,32 @@ export default function SettingsPage() {
 
         {/* Notifications */}
         <section className="bg-gray-700 rounded-lg p-4 shadow-lg">
-          <h2 className="text-xl font-semibold mb-3">Notifications</h2>
-          <div className="flex justify-between items-center mb-2">
-            <span>Game Alerts</span>
-            <input type="checkbox" />
-          </div>
-          <div className="flex justify-between items-center">
-            <span>Email Updates</span>
-            <input type="checkbox" />
-          </div>
-        </section>
-
+              <h2 className="text-xl font-semibold mb-3">Notifications</h2>
+              
+              <div className="flex justify-between items-center mb-2">
+                <span>Game Alerts</span>
+                <input
+                  type="checkbox"
+                  checked={gameAlerts}
+                  onChange={handleGameAlertsChange}
+                />
+              </div>
+            </section>
         {/* Privacy & Security */}
         <section className="bg-gray-700 rounded-lg p-4 shadow-lg">
           <h2 className="text-xl font-semibold mb-3">Privacy & Security</h2>
-          <button className="bg-yellow-500 px-4 py-2 rounded hover:bg-yellow-600 w-full">
-            Manage Privacy
-          </button>
-          <button className="bg-red-500 px-4 py-2 rounded hover:bg-red-600 w-full mt-2">
-            Delete Account
-          </button>
+            <DeleteAccountModal />
         </section>
 
         {/* About & Support */}
         <section className="bg-gray-700 rounded-lg p-4 shadow-lg">
           <h2 className="text-xl font-semibold mb-3">About & Support</h2>
           <p className="text-sm mb-2">Version: 1.0.0</p>
-          <button className="bg-purple-500 px-4 py-2 rounded hover:bg-purple-600 w-full">
+          <button 
+            onClick={() => {
+              window.location.href = `mailto:valeraleeabraham@gmail.com?subject=Support Request&body=Please describe your issue here...`;
+            }}
+            className="bg-purple-500 px-4 py-2 rounded hover:bg-purple-600 w-full">
             Contact Support
           </button>
         </section>

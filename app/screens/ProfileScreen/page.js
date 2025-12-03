@@ -1,15 +1,56 @@
 
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getAuth } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { dbf } from '../../../lib/firebase';
 
 export default function ProfilePage() {
-  // Example recent games data
-  const recentGames = [
-    { id: 1, name: 'Space Adventure', img: '/assets/game1.jpg' },
-    { id: 2, name: 'Puzzle Quest', img: '/assets/game2.jpg' },
-    { id: 3, name: 'Battle Arena', img: '/assets/game3.jpg' },
-  ];
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const auth = getAuth();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const userRef = doc(dbf, 'users', user.uid);
+        const snap = await getDoc(userRef);
+        if (snap.exists()) {
+          setProfile(snap.data());
+        } else {
+          console.warn('No profile found for user.');
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  if (loading) {
+    return <div className="text-white">Loading profile...</div>;
+  }
+
+  if (!profile) {
+    return <div className="text-white">No profile data found.</div>;
+  }
+
+  // Fallback avatar logic
+  const avatar =
+    profile.avatarUrl === '/assets/default-avatar.png' || !profile.avatarUrl
+      ? '/assets/Profile.gif'
+      : profile.avatarUrl;
 
   return (
     <main className="flex flex-col items-center min-h-screen bg-gray-800 text-white p-6">
@@ -26,18 +67,22 @@ export default function ProfilePage() {
 
       {/* Profile Info */}
       <div className="bg-gray-700 rounded-lg p-6 shadow-lg w-full max-w-4xl flex flex-col items-center mb-8">
-        /assets/Profile.gif
-        <h2 className="text-2xl font-semibold">Lee Valera</h2>
-        <p className="text-gray-300">Gamer | Level 10</p>
+        <img
+          src={avatar}
+          alt="User Avatar"
+          className="w-32 h-32 rounded-full mb-4 object-cover"
+        />
+        <h2 className="text-2xl font-semibold">{profile.username || 'Anonymous'}</h2>
+        <p className="text-gray-300">{profile.bio || 'Game on!!'}</p>
       </div>
 
       {/* Recent Games */}
       <div className="w-full max-w-4xl">
         <h3 className="text-xl font-semibold mb-4">Recently Played</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {recentGames.map((game) => (
+          {(profile.recentGames || []).map((game, index) => (
             <div
-              key={game.id}
+              key={index}
               className="bg-gray-700 rounded-lg shadow-lg overflow-hidden hover:scale-105 transition-transform"
             >
               <img src={game.img} alt={game.name} className="w-full h-40 object-cover" />
@@ -51,3 +96,4 @@ export default function ProfilePage() {
     </main>
   );
 }
+

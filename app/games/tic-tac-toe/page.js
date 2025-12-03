@@ -4,6 +4,8 @@ import React, { useState, Fragment, useEffect } from 'react';
 import {useRouter} from 'next/navigation';
 import { ticTacWin } from './ticTacWin';
 import {bestMove} from './ticTocAI'
+import {auth} from '../../../lib/firebase';
+import {addRecentGame} from '../../components/AddGame';
 
 export default function ticTacToe() {
 
@@ -45,6 +47,8 @@ export default function ticTacToe() {
     //Total  wins
     const [totalWin, setTotalWin] = useState(0);
 
+    //Game data
+    const game = {name: 'Tic-Tac-Toe', img: '/assets/tictactieassets/tictactoeCardLogo.gif'}
     //-----------------------------------------------------------------------------//
     //Functions
 
@@ -86,6 +90,10 @@ export default function ticTacToe() {
 
     //Handles game ends
     const endGame = (result) => {
+
+        const user = auth.currentUser;
+        addRecentGame(user.uid, game).catch(console.error);
+
         if (result === "draw") {
             router.push(`/screens/ScorePage?wins=${finalScore}&result=draw`);
         } else if (result === "X" || result === "O") {
