@@ -5,9 +5,17 @@ import {useRouter} from 'next/navigation';
 import { ticTacWin } from './ticTacWin';
 import {bestMove} from './ticTocAI'
 import {auth} from '../../../lib/firebase';
+import { useUser } from '@/app/components/UserProvider';
+import {globalLeader } from '@/app/components/GameTali';
 import {addRecentGame} from '../../components/AddGame';
 
 export default function ticTacToe() {
+    //Instance of useUser
+    const {profile, loading} = useUser();
+    
+    useEffect(() => {
+    console.log('loading:', loading, 'profile:', profile);
+    }, [loading, profile]);
 
     //-----------------------------------------------------------------------------//
     //Navigation
@@ -35,9 +43,6 @@ export default function ticTacToe() {
     //Status of game
     const [status, setStatus] = useState("ongoing");
 
-    //Loading
-    const [loading, setLoading] = useState(false);
-
     //Timer
     const [seconds, setSeconds] = useState(10);
 
@@ -48,7 +53,7 @@ export default function ticTacToe() {
     const [totalWin, setTotalWin] = useState(0);
 
     //Game data
-    const game = {name: 'Tic-Tac-Toe', img: '/assets/tictactieassets/tictactoeCardLogo.gif'}
+    const game = {name: 'Tic-Tac-Toe', img: '/assets/tictactoeassets/tictactoeCardLogo.gif'}
     //-----------------------------------------------------------------------------//
     //Functions
 
@@ -88,25 +93,49 @@ export default function ticTacToe() {
         }
     }
 
+    
+    async function onTicTacToeResult(result, user) {
+    try {
+        const uid = user?.uid;
+        const userName = profile?.username ?? 'Unknown Player';
+
+        if (result === 'X') {
+            result = 'WIN';
+        }
+        if (result === 'O') {
+            result = 'LOSE';
+        }
+
+        await globalLeader(uid, userName, {
+        game: 'Tic-Tac-Toe',
+        result, // 'WIN' | 'LOSE' | 'DRAW'
+        });
+
+        console.log('Tic-Tac-Toe result saved to global leaderboard.');
+    } catch (err) {
+        console.error('Failed to save Tic-Tac-Toe result:', err);
+    }
+    }
+
     //Handles game ends
-    const endGame = (result) => {
+    const endGame = async (result) => {
 
         const user = auth.currentUser;
-        addRecentGame(user.uid, game).catch(console.error);
+        await addRecentGame(user.uid, game).catch(console.error);
+
+        await onTicTacToeResult(result, user);
 
         if (result === "draw") {
-            router.push(`/screens/ScorePage?wins=${finalScore}&result=draw`);
+            router.push(`/screens/ScorePage?&result=draw`);
         } else if (result === "X" || result === "O") {
-            router.push(`/screens/ScorePage?wins=${finalScore}&winner=${result}`);
-        } else {
-            router.push(`/screens/ScorePage?wins=${finalScore}`);
+            router.push(`/screens/ScorePage?winner=${result}`);
         }
     };
 
     //Handles end button
     const endButton  = ()  => {
         setStatus('ended');
-        endGame();
+        endGame("O");
     }
 
       //Handles match start

@@ -4,8 +4,17 @@ import React, { useState, useEffect } from 'react';
 import {useRouter} from 'next/navigation'
 import {auth} from '../../../lib/firebase';
 import {addRecentGame} from '../../components/AddGame';
+import {globalLeader } from '@/app/components/GameTali';
+import { useUser } from '@/app/components/UserProvider';
 
 export default function MemoryGame() {
+  //Instance of useUser
+  const {profile, loading} = useUser();
+  
+  useEffect(() => {
+  console.log('loading:', loading, 'profile:', profile);
+  }, [loading, profile]);
+  
   const timeOfGame = 60;
   const router =  useRouter();
   const game = {name: 'Memory Game', img: '/assets/memoryassets/memoryCardLogo.gif'}
@@ -37,6 +46,23 @@ export default function MemoryGame() {
   const [timeLeft, setTimeLeft] = useState(timeOfGame);
   const [gameEnded, setGameEnded] = useState(false);
   const [startGame, setStartGame] = useState(false);
+  
+  async function onMemoryMatchGameEnd(finalScore, user) {
+    try {
+      // Assume you have Firebase Auth user:
+      const uid = user?.uid;
+      const userName = profile?.username ?? 'Unknown Player';
+
+      await globalLeader(uid, userName, {
+        game: 'Memory Match',
+        score: finalScore,
+      });
+
+      console.log('Memory Match score saved to global leaderboard.');
+    } catch (err) {
+      console.error('Failed to save Memory Match score:', err);
+    }
+  }
 
   //Timer Count
   useEffect(
@@ -76,7 +102,12 @@ export default function MemoryGame() {
   // Handle card press
   const cardPressedHandler = (index) => {
     if (startGame) {
-          if (selectedCards.length === 2 || selectedCards.includes(index)) return;
+          if (selectedCards.length === 2 || selectedCards.includes(index)) {
+            setTimeLeft (
+              (prev) => prev-1
+            ) ;
+            return;
+          };
     setSelectedCards([...selectedCards, index]);
     }
   };
@@ -88,14 +119,17 @@ export default function MemoryGame() {
   };
 
     //Handles game ends
-  const endGame  = () => {
+  const endGame  = async () => {
     const user = auth.currentUser;
 
     if (gameEnded) return;
     setGameEnded(true);
     const score = calculateScore();
     //If score is bellow zero.
-    addRecentGame(user.uid, game).catch(console.error);
+    await addRecentGame(user.uid, game).catch(console.error);
+
+    await onMemoryMatchGameEnd(score, user);
+    
     if (score < 0) {
       const score = 0;
       router.push(`/screens/ScorePage?score=${score}`);
