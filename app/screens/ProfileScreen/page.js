@@ -59,7 +59,7 @@ export default function ProfilePage() {
         <h1 className="text-3xl font-bold">Profile</h1>
         <button
           onClick={() => window.history.back()}
-          className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600"
+          className="bg-purple-500 px-4 py-2 rounded hover:bg-purple-600"
         >
           Back Home
         </button>

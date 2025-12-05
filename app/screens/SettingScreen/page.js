@@ -232,7 +232,7 @@ export default function SettingsPage() {
         <h1 className="text-3xl font-bold">Settings</h1>
         <button
           onClick={goHome}
-          className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600"
+          className="bg-purple-500 px-4 py-2 rounded hover:bg-purple-600"
         >
           Back Home
         </button>
@@ -242,7 +242,7 @@ export default function SettingsPage() {
         {/* Profile Settings */}
         <section className="bg-gray-700 rounded-lg p-4 shadow-lg">
           <h2 className="text-xl font-semibold mb-3">Profile Settings</h2>
-          <button onClick={onShowEditProf} className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 w-full">
+          <button onClick={onShowEditProf} className="bg-purple-500 px-4 py-2 rounded hover:bg-purple-600 w-full">
             Edit Profile
           </button>
           {/* Edit profile */}

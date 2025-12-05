@@ -209,7 +209,7 @@ export default function LogInScreen() {
             </div>
 
             {/*Footer */}
-            <div className='bg-gray-400 text-white p-8 text-center w-full'>
+            <div className='bg-purple-700 text-white p-8 text-center w-full'>
                 <h1>
                     @Author: Lee Valera, Aileen Pearl, Kevin Yabut
                 </h1>
