@@ -12,6 +12,8 @@ import { useUser } from '../../components/UserProvider';
 export default function HomeScreen() {
     //Instance of useUser
     const {profile, loading} = useUser();
+
+    const user = auth.currentUser;
     
     useEffect(() => {
     console.log('loading:', loading, 'profile:', profile);
@@ -209,8 +211,14 @@ export default function HomeScreen() {
             {/* Body */}
             <div className='grow flex flex-col lg:flex-row items-center justify-center space-y-5 lg:space-y-0 lg:space-x-5'>
                 <div className='grid grid-cols-1 lg:grid-cols-2'>
-                    <GameCard img={gameMemoryMatch} />
-                    <GameCard img={ticTacToe} />
+                    {!user? null:
+                        <>
+                        <GameCard img={gameMemoryMatch} />
+                        <GameCard img={ticTacToe} />
+                        </>
+                    }
+                    {/* <GameCard img={gameMemoryMatch} />
+                    <GameCard img={ticTacToe} /> */}
                     <GameCard img={tetris} />
                     <GameCard img={wordle} />
                     <GameCard img={snake} />
