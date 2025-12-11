@@ -228,13 +228,7 @@ export default function MemoryGame() {
                 </div>
             )}
           </div>
-
         </div>
-
-      {/* Footer */}
-      <div className="bg-gray-400 w-full text-center text-white mt-4">
-        <h1>@Author: Lee Valera</h1>
-      </div>
     </main>
   );
 }

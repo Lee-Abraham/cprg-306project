@@ -137,7 +137,7 @@ export async function globalLeader(user, userName, tali) {
         playerRef, {
           userName,
           [result]: increment(1),
-          updateAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
         },
         {merge: true}
       );

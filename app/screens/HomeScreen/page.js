@@ -8,9 +8,12 @@ import {auth} from '../../../lib/firebase'
 import { IoLogIn, IoMenu } from 'react-icons/io5';
 import { useUser } from '../../components/UserProvider';
 
+
 export default function HomeScreen() {
     //Instance of useUser
     const {profile, loading} = useUser();
+
+    const user = auth.currentUser;
     
     useEffect(() => {
     console.log('loading:', loading, 'profile:', profile);
@@ -21,30 +24,51 @@ export default function HomeScreen() {
     //Check if user check menu
     const [menu, setMenu] = useState(false);
     //Check if user signed in
-    const [isSigned, setIsSigned] = useState(false);
-
-    useEffect (() => {
-        if (!auth.currentUser) {
-            setIsSigned(false);
-        }
-        else {
-            setIsSigned(true);
-        }
-    })
+    const isSigned = !!auth.currentUser;
 
     //Set Memory Match
     const gameMemoryMatch = {
         src: '/assets/memoryassets/memoryCardLogo.gif',
         name: 'Memory Match',
-        desc: 'Select the matching cards'
-    }
+        desc: 'Select the matching cards',
+    };
 
     //Set Tic-Tac-Toe
     const ticTacToe = {
         src: '/assets/tictactoeassets/tictactoeCardLogo.gif',
         name: 'Tic-Tac-Toe',
         desc: 'Align three of the same symbol'
-    }
+    };
+
+    // Set Tetris
+    const tetris = {
+    src: '/assets/tetrisAssets/tetris.gif',
+    name: 'Tetris',
+    desc: 'Stack blocks to score'
+    };
+
+    // Set Wordle
+    const wordle = {
+    src: '/assets/wordleAssets/wordle.gif',
+    name: 'Wordle',
+    desc: 'Guess the 5-letter word',
+    };
+
+    // Set Snake
+    const snake = {
+    src: '/assets/snakeAssets/snake.gif', 
+    name: 'Snake',
+    desc: 'Eat food and grow'
+    };
+
+    // Set PingPong
+    const pingpong = {
+    src: '/assets/pingpongAssets/pingpong.gif', 
+    name: 'PingPong',
+    desc: 'Rally the ball back and forth'
+    };
+
+
 
     //Go to profile page
     const profilePage = () => {
@@ -107,7 +131,7 @@ export default function HomeScreen() {
     return (
         <main className="flex flex-col bg-gray-600 text-black min-h-screen overflow-hidden">
             {/* Header*/}
-            <div className="shadow-lg bg-gray-400 flex-row items-center justify-center w-full text-white px-4 h-24 relative">
+            <div className="shadow-lg bg-purple-700 flex-row items-center justify-center w-full text-white px-4 h-24 relative">
                 <h1 className="mt-5 absolute lg:left-1/2 lg:transform lg:-translate-x-1/2 lg:text-5xl text-3xl font-bold">My Game</h1>
                 
                 {/* Show menu if log in/ Show log button when not signed in */}
@@ -128,46 +152,82 @@ export default function HomeScreen() {
             {!menu ? (
                 null
             ) : ( 
-            <div className="shadow-2xl flex flex-col z-20 justify-start items-center absolute right-0 bg-gray-500 min-h-full lg:w-[15%] w-[70%] p-5">
+                <div className="fixed top-0 right-0 z-50 flex flex-col items-center bg-gray-800/90 backdrop-blur-md shadow-2xl min-h-full lg:w-[15%] w-[70%] p-6 rounded-l-3xl transition-transform duration-300">
+                {/* Close Button */}
                 <button
-                    className="text-2xl cursor-pointer self-start mb-5"
+                    className="self-end text-2xl font-bold text-white hover:text-yellow-400 transition"
                     onClick={showMenu}
                 >
-                    X
+                    ✕
                 </button>
 
                 {/* Profile Image */}
-                <img className=" cursor-pointer w-20 absolute left-1/2 transform -translate-x-1/2 rounded-full shadow-2xl" src={profile?.avatarUrl || '/assets/Profile.gif'} alt="profile Icon" />
+                <div className="relative w-full flex justify-center mt-6 mb-4">
+                <img
+                    className="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover"
+                    src="/assets/Profile.gif" 
+                    alt="Profile"
+                />
+                </div>
+
+
                 {/* Username */}
-                <h2 className="text-white text-xl mb-4 mt-10">{profile?.username || 'Guest'}</h2>
+                <h2 className="text-white text-xl font-semibold mb-6">{profile?.username || 'Guest'}</h2>
 
                 {/* Menu Items */}
-                <ul className="flex flex-col gap-4 text-white text-lg">
-                    <li className="cursor-pointer hover:text-yellow-300" onClick={profilePage}>
+                <ul className="flex flex-col w-full gap-4 text-white text-lg font-medium">
+                    <li
+                    className="cursor-pointer hover:text-purple-400 hover:scale-105 transition-transform duration-200"
+                    onClick={profilePage}
+                    >
                     My Profile
                     </li>
-                    <li className="cursor-pointer hover:text-yellow-300" onClick={leaderboardPage}>Leaderboard</li>
-                    <li className="cursor-pointer hover:text-yellow-300" onClick={settingPage}>Settings</li>
+                    <li
+                    className="cursor-pointer hover:text-purple-400 hover:scale-105 transition-transform duration-200"
+                    onClick={leaderboardPage}
+                    >
+                    Leaderboard
+                    </li>
+                    <li
+                    className="cursor-pointer hover:text-purple-400 hover:scale-105 transition-transform duration-200"
+                    onClick={settingPage}
+                    >
+                    Settings
+                    </li>
                 </ul>
 
                 {/* Sign Out */}
-                <button onClick={logOut} className="mt-10 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                <button
+                    onClick={logOut}
+                    className="mt-auto mb-6 bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded-full shadow-lg transition-colors duration-200"
+                >
                     Sign Out
                 </button>
-            </div>
+                </div>
+    
             )}
 
 
             {/* Body */}
             <div className='grow flex flex-col lg:flex-row items-center justify-center space-y-5 lg:space-y-0 lg:space-x-5'>
                 <div className='grid grid-cols-1 lg:grid-cols-2'>
-                    <GameCard img={gameMemoryMatch} />
-                    <GameCard img={ticTacToe} />
+                    {!user? null:
+                        <>
+                        <GameCard img={gameMemoryMatch} />
+                        <GameCard img={ticTacToe} />
+                        </>
+                    }
+                    {/* <GameCard img={gameMemoryMatch} />
+                    <GameCard img={ticTacToe} /> */}
+                    <GameCard img={tetris} />
+                    <GameCard img={wordle} />
+                    <GameCard img={snake} />
+                    <GameCard img={pingpong} />
                 </div>
             </div>
 
             {/*Footer */}
-            <div className='bg-gray-400 shadow-lg text-white p-4 text-center w-full'>
+            <div className='bg-purple-700 shadow-lg text-white p-4 text-center w-full'>
                 <h1>@Author: Lee Valera, Aileen Pearl, Kevin Yabut </h1>
             </div> 
         </main>
