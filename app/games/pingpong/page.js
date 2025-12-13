@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAuth } from 'firebase/auth';
@@ -7,10 +8,11 @@ import { addRecentGame } from '../../components/AddGame';
 export default function PingPong() {
   const router = useRouter();
   const canvasRef = useRef(null);
+
   const canvasWidth = 400;
   const canvasHeight = 300;
   const paddleSpeed = 40;
-  const aiSpeed = 1.5; // slower AI
+  const aiSpeed = 1.5;
 
   const backHome = () => router.push('/screens/HomeScreen');
 
@@ -19,8 +21,9 @@ export default function PingPong() {
   const [paddle2, setPaddle2] = useState({ y: 120, width: 10, height: 60 });
   const [score, setScore] = useState({ player: 0, ai: 0 });
   const [gameStarted, setGameStarted] = useState(false);
+  const [winner, setWinner] = useState(null);
 
-  // Log the game as a recent game
+  // Log game
   const logPingPong = async () => {
     try {
       const auth = getAuth();
@@ -41,7 +44,16 @@ export default function PingPong() {
     logPingPong();
   };
 
-  // Draw everything
+  const restartGame = () => {
+    setBall({ x: 200, y: 150, dx: 3, dy: 3, radius: 10 });
+    setPaddle1({ y: 120, width: 10, height: 60 });
+    setPaddle2({ y: 120, width: 10, height: 60 });
+    setScore({ player: 0, ai: 0 });
+    setWinner(null);
+    setGameStarted(false);
+  };
+
+  // Draw game
   const draw = (ctx) => {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
@@ -65,44 +77,60 @@ export default function PingPong() {
     ctx.fillText(`AI: ${score.ai}`, canvasWidth - 60, 20);
   };
 
-  // Update game state
+  // Update logic
   const update = () => {
+    if (!gameStarted || winner) return;
+
     let newBall = { ...ball };
     newBall.x += newBall.dx;
     newBall.y += newBall.dy;
 
-    // Bounce off walls
+    // Wall collision
     if (newBall.y + newBall.radius > canvasHeight || newBall.y - newBall.radius < 0) {
-      newBall.dy = -newBall.dy;
+      newBall.dy *= -1;
     }
 
-    // Bounce off paddles
+    // Paddle collision
     if (
       newBall.x - newBall.radius < paddle1.width &&
       newBall.y > paddle1.y &&
       newBall.y < paddle1.y + paddle1.height
-    ) newBall.dx = -newBall.dx;
+    ) newBall.dx *= -1;
 
     if (
       newBall.x + newBall.radius > canvasWidth - paddle2.width &&
       newBall.y > paddle2.y &&
       newBall.y < paddle2.y + paddle2.height
-    ) newBall.dx = -newBall.dx;
+    ) newBall.dx *= -1;
 
-    // Score
+    // Scoring
     if (newBall.x < 0) {
-      setScore(prev => ({ ...prev, ai: prev.ai + 1 }));
-      newBall = { x: canvasWidth / 2, y: canvasHeight / 2, dx: 3, dy: 3, radius: 10 };
+      setScore(prev => {
+        const aiScore = prev.ai + 1;
+        if (aiScore >= 5) {
+          setWinner("AI");
+          setGameStarted(false);
+        }
+        return { ...prev, ai: aiScore };
+      });
+      newBall = { x: 200, y: 150, dx: 3, dy: 3, radius: 10 };
     }
 
     if (newBall.x > canvasWidth) {
-      setScore(prev => ({ ...prev, player: prev.player + 1 }));
-      newBall = { x: canvasWidth / 2, y: canvasHeight / 2, dx: -3, dy: 3, radius: 10 };
+      setScore(prev => {
+        const playerScore = prev.player + 1;
+        if (playerScore >= 5) {
+          setWinner("Player");
+          setGameStarted(false);
+        }
+        return { ...prev, player: playerScore };
+      });
+      newBall = { x: 200, y: 150, dx: -3, dy: 3, radius: 10 };
     }
 
     setBall(newBall);
 
-    // AI paddle movement
+    // AI paddle
     let newPaddle2 = { ...paddle2 };
     if (newBall.y > newPaddle2.y + newPaddle2.height / 2) newPaddle2.y += aiSpeed;
     if (newBall.y < newPaddle2.y + newPaddle2.height / 2) newPaddle2.y -= aiSpeed;
@@ -110,59 +138,70 @@ export default function PingPong() {
     setPaddle2(newPaddle2);
   };
 
+  // Game loop
   useEffect(() => {
     if (!gameStarted) return;
 
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-
-    const gameLoop = setInterval(() => {
+    const ctx = canvasRef.current.getContext('2d');
+    const loop = setInterval(() => {
       update();
       draw(ctx);
     }, 20);
 
-    return () => clearInterval(gameLoop);
-  }, [ball, paddle1, paddle2, score, gameStarted]);
+    return () => clearInterval(loop);
+  }, [ball, paddle1, paddle2, score, gameStarted, winner]);
 
-  // Player paddle control
-  const handleKeyDown = (e) => {
-    let newPaddle = { ...paddle1 };
-    if (e.key === 'ArrowUp') newPaddle.y = Math.max(0, newPaddle.y - paddleSpeed);
-    if (e.key === 'ArrowDown') newPaddle.y = Math.min(canvasHeight - paddle1.height, newPaddle.y + paddleSpeed);
-    setPaddle1(newPaddle);
-  };
-
+  // Player controls
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [paddle1]);
+    const handleKey = (e) => {
+      if (!gameStarted || winner) return;
+      setPaddle1(prev => {
+        let y = prev.y;
+        if (e.key === 'ArrowUp') y = Math.max(0, y - paddleSpeed);
+        if (e.key === 'ArrowDown') y = Math.min(canvasHeight - prev.height, y + paddleSpeed);
+        return { ...prev, y };
+      });
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [gameStarted, winner]);
 
   return (
-    <div className="flex flex-col items-center justify-center p-4 bg-gray-900 min-h-screen text-white">
-      <h1 className="text-3xl font-bold mb-4">Ping Pong Game</h1>
+    <div className="relative flex flex-col items-center justify-center p-4 bg-gray-900 min-h-screen text-white">
+      <h1 className="text-3xl font-bold mb-4">Ping Pong</h1>
 
-      {/* Back Home */}
       <button onClick={backHome} className="absolute top-4 left-4 z-50">
         <img className="w-25" src="/assets/BackButton.gif" alt="Back Button" />
       </button>
 
-      {/* Canvas */}
-      <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} className="border border-white" />
+      <canvas
+        ref={canvasRef}
+        width={canvasWidth}
+        height={canvasHeight}
+        className="border border-white"
+      />
 
-      {/* Instructions */}
-      <p className="mt-2">Use ↑ and ↓ to move the blue paddle</p>
+      <p className="mt-2">Use ↑ and ↓ to move the paddle</p>
 
-      {/* Score */}
-      <div className="mt-4 text-xl">Score: Player {score.player} - AI {score.ai}</div>
-
-      {/* Start Button */}
-      {!gameStarted && (
+      {!gameStarted && !winner && (
         <button
           onClick={startGame}
           className="mt-4 px-4 py-2 bg-green-500 rounded hover:bg-green-600"
         >
           Start Game
         </button>
+      )}
+
+      {winner && (
+        <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center">
+          <h2 className="text-3xl font-bold mb-4">{winner} Wins! 🏆</h2>
+          <button
+            onClick={restartGame}
+            className="px-4 py-2 bg-green-500 rounded hover:bg-green-600"
+          >
+            Restart Game
+          </button>
+        </div>
       )}
     </div>
   );
