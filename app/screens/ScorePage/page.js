@@ -27,43 +27,6 @@ function ScorePageInner() {
     return '';
   }, [winlose]);
 
-  
-  // // Persist results when params and auth are ready
-  // useEffect(() => {
-  //   const user = auth.currentUser;
-  //   if (!user?.uid) return; // user might be null at first render
-
-  //   const run = async () => {
-  //     try {
-  //       // Memory Match: numeric finite score
-  //       if (isScore) {
-  //         const numericScore = Number(score);
-  //         if (Number.isFinite(numericScore)) {
-  //           await gameTali(user.uid, { game: 'Memory Match', score: numericScore });
-  //           return;
-  //         }
-  //       }
-
-  //       // Tic-Tac-Toe: DRAW
-  //       if (isDraw) {
-  //         await gameTali(user.uid, { game: 'Tic-Tac-Toe', result: draw });
-  //         return;
-  //       }
-
-  //       // Tic-Tac-Toe: WIN / LOSE (based on 'winner' = 'X' or 'O')
-  //       if (isWinLose && derivedWinner) {
-  //         await gameTali(user.uid, { game: 'Tic-Tac-Toe', result: derivedWinner });
-  //         return;
-  //       }
-  //     } catch (error) {
-  //       console.error('Error trying to save game result', error);
-  //     }
-  //   };
-
-  //   run();
-  //   // Depend on raw params and derived winner only (no state setters here)
-  // }, [score, isScore, draw, isDraw, winlose, isWinLose, derivedWinner]);
-
   const onHomePagePress = () => {
     router.push('/screens/HomeScreen');
   };

@@ -2,20 +2,25 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { dbf } from '../../../lib/firebase';
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [authReady, setAuthReady] = useState(false);
 
   const auth = getAuth();
 
+
   useEffect(() => {
-    const fetchProfile = async () => {
-      const user = auth.currentUser;
+    // Subscribe to auth changes; this fires once when Firebase restores the session
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setAuthReady(true);
+
       if (!user) {
+        setProfile(null);
         setLoading(false);
         return;
       }
@@ -23,20 +28,24 @@ export default function ProfilePage() {
       try {
         const userRef = doc(dbf, 'users', user.uid);
         const snap = await getDoc(userRef);
+
         if (snap.exists()) {
           setProfile(snap.data());
         } else {
           console.warn('No profile found for user.');
+          setProfile(null);
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
+        setProfile(null);
       } finally {
         setLoading(false);
       }
-    };
+    });
 
-    fetchProfile();
-  }, []);
+    return () => unsubscribe();
+  }, [auth]);
+
 
   if (loading) {
     return <div className="text-white">Loading profile...</div>;

@@ -228,7 +228,6 @@ export default function MemoryGame() {
                 </div>
             )}
           </div>
-
         </div>
     </main>
   );

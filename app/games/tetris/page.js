@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAuth } from 'firebase/auth';
-import { addRecentGame } from '../../components/AddGame'; 
+import { addRecentGame } from '../../components/AddGame';
 
 const ROWS = 20;
 const COLS = 10;
@@ -44,6 +44,9 @@ const getRandomShape = () => {
 };
 
 export default function TetrisGame() {
+
+  const game = {name: 'Tetris', img: '/assets/tetrisAssets/tetris.gif'}
+
   const router = useRouter();
   const [grid, setGrid] = useState(Array.from({ length: ROWS }, () => Array(COLS).fill(0)));
   const [piece, setPiece] = useState(null); // Initialize on client to prevent SSR mismatch
